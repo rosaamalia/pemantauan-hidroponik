@@ -1,6 +1,8 @@
 "use client";
 
+import NextLink from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   Container,
   Stack,
@@ -72,6 +74,8 @@ const testimoni = [
 ];
 
 export default function Home() {
+  const router = useRouter();
+
   return (
     <main>
       <Nav></Nav>
@@ -110,6 +114,9 @@ export default function Home() {
               variant="solid"
               rightIcon={<ArrowForwardIcon />}
               maxWidth={"fit-content"}
+              onClick={() => {
+                router.push("/masuk");
+              }}
             >
               Mulai memonitor kebun
             </Button>
@@ -274,6 +281,9 @@ export default function Home() {
             variant="solid"
             rightIcon={<ArrowForwardIcon />}
             maxWidth={"fit-content"}
+            onClick={() => {
+              router.push("/masuk");
+            }}
           >
             Mulai
           </Button>
@@ -324,8 +334,24 @@ export default function Home() {
             <Text fontSize={"md"} as={"b"}>
               BERGABUNG
             </Text>
-            <Link>Buat Akun</Link>
-            <Link>Masuk</Link>
+            <Link
+              as={NextLink}
+              href="/daftar"
+              _hover={{
+                textDecoration: "none",
+              }}
+            >
+              Buat Akun
+            </Link>
+            <Link
+              as={NextLink}
+              href="/masuk"
+              _hover={{
+                textDecoration: "none",
+              }}
+            >
+              Masuk
+            </Link>
           </Stack>
           <Stack direction={"column"} spacing={2}>
             <Text fontSize={"md"} as={"b"}>

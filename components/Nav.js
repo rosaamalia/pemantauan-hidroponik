@@ -2,6 +2,7 @@
 
 import NextLink from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   Box,
   Flex,
@@ -16,6 +17,7 @@ import {
 import { ArrowForwardIcon, HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 
 export function Nav({ children }) {
+  const router = useRouter();
   const { isOpen, onToggle } = useDisclosure();
 
   return (
@@ -35,14 +37,20 @@ export function Nav({ children }) {
         borderStyle={"solid"}
         borderColor={useColorModeValue("gray.200", "gray.900")}
       >
-        <div>
+        <Link
+          as={NextLink}
+          href="/"
+          _hover={{
+            textDecoration: "none",
+          }}
+        >
           <Image
             src={"/images/logo.png"}
             height={"40"}
             width={"40"}
             alt="Logo"
           />
-        </div>
+        </Link>
 
         {/* Desktop Navbar */}
         <Stack
@@ -69,13 +77,23 @@ export function Nav({ children }) {
           >
             Tutorial Integrasi
           </Link>
-          <Button colorScheme="green" variant="outline">
+          <Button
+            colorScheme="green"
+            variant="outline"
+            onClick={() => {
+              router.push("/masuk");
+            }}
+          >
             Masuk
           </Button>
+
           <Button
             colorScheme="green"
             variant="solid"
             rightIcon={<ArrowForwardIcon />}
+            onClick={() => {
+              router.push("/daftar");
+            }}
           >
             Daftar
           </Button>
@@ -129,6 +147,9 @@ export function Nav({ children }) {
             variant="solid"
             rightIcon={<ArrowForwardIcon />}
             width={"fit-content"}
+            onClick={() => {
+              router.push("/daftar");
+            }}
           >
             Daftar
           </Button>
