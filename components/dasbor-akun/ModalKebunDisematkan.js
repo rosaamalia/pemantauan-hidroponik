@@ -48,8 +48,6 @@ export default function ModalKebunDisematkan({
     onClose();
   };
 
-  console.log(sematan);
-
   return (
     <Modal
       initialFocusRef={initialRef}
@@ -62,7 +60,11 @@ export default function ModalKebunDisematkan({
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Pilih kebun yang akan disematkan</ModalHeader>
+        <ModalHeader>
+          <Text fontSize={"md"} noOfLines={2} pr={3}>
+            Pilih kebun yang akan disematkan
+          </Text>
+        </ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
           <Stack direction={"column"} spacing={2}>
