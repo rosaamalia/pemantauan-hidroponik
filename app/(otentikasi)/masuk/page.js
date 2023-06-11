@@ -76,7 +76,7 @@ export default function Masuk() {
                   onClick={handleShowKataSandi}
                   icon={
                     showKataSandi ? (
-                      <ViewOffIcon w={3} h={3} />
+                      <ViewOffIcon w={5} h={5} />
                     ) : (
                       <ViewIcon w={5} h={5} />
                     )

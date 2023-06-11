@@ -3,7 +3,7 @@
 import NextLink from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Avatar,
   Box,
@@ -232,6 +232,26 @@ export function NavItem({ icon, route, children, ...rest }) {
 }
 
 export function MobileNav({ onOpen, ...rest }) {
+  const routeName = usePathname();
+  const [namaHalaman, setNamaHalaman] = useState("");
+
+  const getRouteName = (route) => {
+    const menu = MenuUtama.find((item) => item.route === route);
+    const informasi = Informasi.find((item) => item.route === route);
+
+    if (menu) {
+      setNamaHalaman(menu.name);
+    }
+
+    if (informasi) {
+      setNamaHalaman(informasi.name);
+    }
+  };
+
+  useEffect(() => {
+    getRouteName(routeName);
+  }, [routeName]);
+
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -259,7 +279,7 @@ export function MobileNav({ onOpen, ...rest }) {
         fontWeight="bold"
         color={"green.900"}
       >
-        Beranda
+        {namaHalaman}
       </Text>
     </Flex>
   );

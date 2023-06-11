@@ -1,85 +1,28 @@
 "use client";
 
-import NextLink from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import {
   Box,
   Flex,
-  Heading,
   Stack,
-  Image,
-  Input,
-  InputGroup,
-  InputLeftAddon,
-  InputRightElement,
-  IconButton,
-  FormControl,
-  FormLabel,
-  FormHelperText,
-  FormErrorMessage,
   Button,
-  Link,
   useDisclosure,
   Text,
-  Modal,
 } from "@chakra-ui/react";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { AiFillPushpin } from "react-icons/ai";
 import { KebunCard } from "@components/dasbor-akun/KebunCard";
 import ModalKebunDisematkan from "@components/dasbor-akun/ModalKebunDisematkan";
+import { KosongCard } from "@components/dasbor-akun/KosongCard";
+import { daftarKebun } from "@utils/data";
 
 export default function Beranda() {
   const router = useRouter();
 
   const [kebun, setKebun] = useState(0);
-  const [semuaKebun, setSemuaKebun] = useState([
-    {
-      id: 1,
-      nama_kebun: "Kebun Tomat",
-      deskripsi:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      jenis_tanaman: {
-        nama_tanaman: "Tomat",
-        foto: "https://i.pinimg.com/564x/96/55/dd/9655dd27a563eb22d1c1d281c1570e21.jpg",
-      },
-      alamat: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-    },
-    {
-      id: 2,
-      nama_kebun: "Kebun Tomat",
-      deskripsi:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      jenis_tanaman: {
-        nama_tanaman: "Tomat",
-        foto: "https://i.pinimg.com/564x/cc/c4/b9/ccc4b9633d9fd361451884fd8bc6af25.jpg",
-      },
-      alamat: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-    },
-    {
-      id: 3,
-      nama_kebun: "Kebun Kubis Keriting",
-      deskripsi:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      jenis_tanaman: {
-        nama_tanaman: "Kubis Keriting",
-        foto: "https://i.pinimg.com/564x/8c/e8/af/8ce8afb912b934b82b40d6e81ef8f684.jpg",
-      },
-      alamat: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-    },
-    {
-      id: 4,
-      nama_kebun: "Kebun Kubis Keriting",
-      deskripsi:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      jenis_tanaman: {
-        nama_tanaman: "Kubis Keriting",
-        foto: "https://i.pinimg.com/564x/38/fd/10/38fd102d64fa02af164dba87536eadde.jpg",
-      },
-      alamat: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-    },
-  ]);
-  const [kebunDisematkan, setKebunDisematkan] = useState([1, 2]);
+  const [semuaKebun, setSemuaKebun] = useState(daftarKebun);
+  const [kebunDisematkan, setKebunDisematkan] = useState([]);
 
   const ubahSematan = (sematan) => {
     setKebunDisematkan(sematan);
@@ -146,6 +89,23 @@ export default function Beranda() {
         )}
       </Flex>
 
+      {kebunDisematkan.length == 0 ? (
+        <KosongCard
+          pathGambar={"/images/dasbor-kebun/daffodils-kuning.jpg"}
+          heading={"Tidak ada kebun yang disematkan!"}
+          deskripsi={
+            "Untuk memudahkan akses, sematkan kebun yang sering kamu kunjungi."
+          }
+          teksTombol={"Sematkan Kebun"}
+          ikon={<AiFillPushpin />}
+          onClick={onOpen}
+          width={{ base: "100%", md: "49%" }}
+          mt={4}
+        />
+      ) : (
+        <></>
+      )}
+
       <Flex my={4} wrap={"wrap"} justifyContent={"space-between"}>
         {semuaKebun
           .filter((kebun) => kebunDisematkan.includes(kebun.id))
@@ -157,49 +117,6 @@ export default function Beranda() {
             ></KebunCard>
           ))}
       </Flex>
-
-      {kebunDisematkan.length == 0 ? (
-        <Box
-          bg={"white"}
-          borderRadius={"lg"}
-          border={"1px"}
-          borderColor={"gray.200"}
-          overflow={"hidden"}
-          width={{ base: "100%", md: "49%" }}
-        >
-          <Flex direction={"row"} alignItems={"center"} height={"100%"}>
-            <Flex width={"30%"} height={"100%"}>
-              <Image
-                objectFit="cover"
-                src="/images/dasbor-kebun/ilustrasi-pegang-tanaman.png"
-                alt="Ilustrasi wanita memegang tanaman"
-              />
-            </Flex>
-
-            <Stack direction={"column"} spacing={2} p={4} width={"70%"}>
-              <Text color={"green.900"} fontWeight={"semibold"}>
-                Tidak ada kebun yang disematkan!
-              </Text>
-              <Text fontSize={"sm"}>
-                Untuk memudahkan akses, sematkan kebun yang sering kamu
-                kunjungi.
-              </Text>
-              <Button
-                colorScheme="green"
-                variant={"outline"}
-                rightIcon={<AiFillPushpin />}
-                size={"sm"}
-                width={"fit-content"}
-                onClick={onOpen}
-              >
-                Sematkan Kebun
-              </Button>
-            </Stack>
-          </Flex>
-        </Box>
-      ) : (
-        <></>
-      )}
 
       <ModalKebunDisematkan
         isOpen={isOpen}
