@@ -133,3 +133,300 @@ export let jenis_tanaman = [
     foto: "https://images.unsplash.com/photo-1592565398586-156e7a4a055e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
   },
 ];
+
+export let rekomendasi = [
+  {
+    hasil_rekomendasi: 0,
+    tindakan: [
+      {
+        parameter: "",
+        label: "Intensitas cahaya",
+        deskripsi: "Tidak ada tindakan",
+        emoji: "🌿",
+      },
+    ],
+  },
+  {
+    hasil_rekomendasi: 1,
+    tindakan: [
+      {
+        parameter: "tds",
+        label: "TDS",
+        deskripsi: "Menambahkan jumlah air",
+        emoji: "💧",
+      },
+    ],
+  },
+  {
+    hasil_rekomendasi: 2,
+    tindakan: [
+      {
+        parameter: "intensitas_cahaya",
+        label: "Intensitas cahaya",
+        deskripsi: "Menambahkan intensitas cahaya",
+        emoji: "💡",
+      },
+    ],
+  },
+  {
+    hasil_rekomendasi: 3,
+    tindakan: [
+      {
+        parameter: "tds",
+        label: "TDS",
+        deskripsi: "Menambahkan jumlah nutrisi",
+        emoji: "🧪",
+      },
+    ],
+  },
+  {
+    hasil_rekomendasi: 4,
+    tindakan: [
+      {
+        parameter: "ph",
+        label: "pH Larutan",
+        deskripsi: "Menambahkan pH larutan",
+        emoji: "🔼",
+      },
+    ],
+  },
+  {
+    hasil_rekomendasi: 5,
+    tindakan: [
+      {
+        parameter: "ph",
+        label: "pH Larutan",
+        deskripsi: "Mengurangi pH larutan",
+        emoji: "🔽",
+      },
+    ],
+  },
+  {
+    hasil_rekomendasi: 6,
+    tindakan: [
+      {
+        parameter: "tds",
+        label: "TDS",
+        deskripsi: "Menambahkan jumlah air",
+        emoji: "💧",
+      },
+      {
+        parameter: "intensitas_cahaya",
+        label: "Intensitas cahaya",
+        deskripsi: "Menambahkan intensitas cahaya",
+        emoji: "💡",
+      },
+    ],
+  },
+  {
+    hasil_rekomendasi: 7,
+    tindakan: [
+      {
+        parameter: "tds",
+        label: "TDS",
+        deskripsi: "Menambahkan jumlah air",
+        emoji: "💧",
+      },
+      {
+        parameter: "ph",
+        label: "pH Larutan",
+        deskripsi: "Menambahkan pH larutan",
+        emoji: "🔼",
+      },
+    ],
+  },
+  {
+    hasil_rekomendasi: 8,
+    tindakan: [
+      {
+        parameter: "tds",
+        label: "TDS",
+        deskripsi: "Menambahkan jumlah air",
+        emoji: "💧",
+      },
+      {
+        parameter: "ph",
+        label: "pH Larutan",
+        deskripsi: "Mengurangi pH larutan",
+        emoji: "🔽",
+      },
+    ],
+  },
+  {
+    hasil_rekomendasi: 9,
+    tindakan: [
+      {
+        parameter: "tds",
+        label: "TDS",
+        deskripsi: "Menambahkan jumlah air",
+        emoji: "💧",
+      },
+      {
+        parameter: "intensitas_cahaya",
+        label: "Intensitas cahaya",
+        deskripsi: "Menambahkan intensitas cahaya",
+        emoji: "💡",
+      },
+      {
+        parameter: "ph",
+        label: "pH Larutan",
+        deskripsi: "Menambahkan pH larutan",
+        emoji: "🔼",
+      },
+    ],
+  },
+  {
+    hasil_rekomendasi: 10,
+    tindakan: [
+      {
+        parameter: "tds",
+        label: "TDS",
+        deskripsi: "Menambahkan jumlah air",
+        emoji: "💧",
+      },
+      {
+        parameter: "intensitas_cahaya",
+        label: "Intensitas cahaya",
+        deskripsi: "Menambahkan intensitas cahaya",
+        emoji: "💡",
+      },
+      {
+        parameter: "ph",
+        label: "pH Larutan",
+        deskripsi: "Mengurangi pH larutan",
+        emoji: "🔽",
+      },
+    ],
+  },
+  {
+    hasil_rekomendasi: 11,
+    tindakan: [
+      {
+        parameter: "intensitas_cahaya",
+        label: "Intensitas cahaya",
+        deskripsi: "Menambahkan intensitas cahaya",
+        emoji: "💡",
+      },
+      {
+        parameter: "tds",
+        label: "TDS",
+        deskripsi: "Menambahkan jumlah nutrisi",
+        emoji: "🧪",
+      },
+    ],
+  },
+  {
+    hasil_rekomendasi: 12,
+    tindakan: [
+      {
+        parameter: "intensitas_cahaya",
+        label: "Intensitas cahaya",
+        deskripsi: "Menambahkan intensitas cahaya",
+        emoji: "💡",
+      },
+      {
+        parameter: "ph",
+        label: "pH Larutan",
+        deskripsi: "Menambahkan pH larutan",
+        emoji: "🔼",
+      },
+    ],
+  },
+  {
+    hasil_rekomendasi: 13,
+    tindakan: [
+      {
+        parameter: "intensitas_cahaya",
+        label: "Intensitas cahaya",
+        deskripsi: "Menambahkan intensitas cahaya",
+        emoji: "💡",
+      },
+      {
+        parameter: "ph",
+        label: "pH Larutan",
+        deskripsi: "Mengurangi pH larutan",
+        emoji: "🔽",
+      },
+    ],
+  },
+  {
+    hasil_rekomendasi: 14,
+    tindakan: [
+      {
+        parameter: "intensitas_cahaya",
+        label: "Intensitas cahaya",
+        deskripsi: "Menambahkan intensitas cahaya",
+        emoji: "💡",
+      },
+      {
+        parameter: "tds",
+        label: "TDS",
+        deskripsi: "Menambahkan jumlah nutrisi",
+        emoji: "🧪",
+      },
+      {
+        parameter: "ph",
+        label: "pH Larutan",
+        deskripsi: "Menambahkan pH larutan",
+        emoji: "🔼",
+      },
+    ],
+  },
+  {
+    hasil_rekomendasi: 15,
+    tindakan: [
+      {
+        parameter: "intensitas_cahaya",
+        label: "Intensitas cahaya",
+        deskripsi: "Menambahkan intensitas cahaya",
+        emoji: "💡",
+      },
+      {
+        parameter: "tds",
+        label: "TDS",
+        deskripsi: "Menambahkan jumlah nutrisi",
+        emoji: "🧪",
+      },
+      {
+        parameter: "ph",
+        label: "pH Larutan",
+        deskripsi: "Mengurangi pH larutan",
+        emoji: "🔽",
+      },
+    ],
+  },
+  {
+    hasil_rekomendasi: 16,
+    tindakan: [
+      {
+        parameter: "tds",
+        label: "TDS",
+        deskripsi: "Menambahkan jumlah nutrisi",
+        emoji: "🧪",
+      },
+      {
+        parameter: "ph",
+        label: "pH Larutan",
+        deskripsi: "Menambahkan pH larutan",
+        emoji: "🔼",
+      },
+    ],
+  },
+  {
+    hasil_rekomendasi: 17,
+    tindakan: [
+      {
+        parameter: "tds",
+        label: "TDS",
+        deskripsi: "Menambahkan jumlah nutrisi",
+        emoji: "🧪",
+      },
+      {
+        parameter: "ph",
+        label: "pH Larutan",
+        deskripsi: "Mengurangi pH larutan",
+        emoji: "🔽",
+      },
+    ],
+  },
+];

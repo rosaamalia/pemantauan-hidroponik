@@ -20,36 +20,45 @@ import {
   useDisclosure,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 import {
-  IoHome,
-  IoFlower,
-  IoAddCircle,
-  IoNewspaper,
-  IoInformationCircle,
+  IoStatsChart,
+  IoLeaf,
+  IoNotifications,
+  IoTimeSharp,
   IoMenu,
   IoLogOut,
 } from "react-icons/io5";
 
-const MenuUtama = [
-  { name: "Beranda", icon: IoHome, route: "/beranda" },
-  { name: "Semua Kebun", icon: IoFlower, route: "/kebun" },
-  { name: "Tambah Kebun", icon: IoAddCircle, route: "/kebun/tambah" },
-];
-const Informasi = [
-  { name: "Informasi Tanaman", icon: IoNewspaper, route: "/informasi-tanaman" },
-  {
-    name: "Tutorial Integrasi",
-    icon: IoInformationCircle,
-    route: "/tutorial-integrasi",
-  },
-];
-
-export function SidebarAkun({ children }) {
+export function SidebarKebun({ kebun, children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [nama, setNama] = useState("Kim Jiwoo 김지우");
   const [profil, setProfil] = useState(
     "https://i.pinimg.com/564x/6b/0a/ff/6b0aff7fd2d02a6394026c0551ad4226.jpg"
   );
+
+  const MenuUtama = [
+    { name: "Dasbor Kebun", icon: IoStatsChart, route: `/kebun/${kebun.id}` },
+    {
+      name: "Tentang Kebun",
+      icon: IoLeaf,
+      route: `/kebun/${kebun.id}/tentang`,
+      children: {
+        route: `/kebun/${kebun.id}/tentang/edit`,
+      },
+    },
+    {
+      name: "Notifikasi",
+      icon: IoNotifications,
+      route: `/kebun/${kebun.id}/notifikasi`,
+    },
+    {
+      name: "Histori",
+      icon: IoTimeSharp,
+      route: `/kebun/${kebun.id}/histori`,
+      children: { route: `/kebun/${kebun.id}/histori/grafik` },
+    },
+  ];
 
   return (
     <Box minH="100vh">
@@ -58,6 +67,8 @@ export function SidebarAkun({ children }) {
         display={{ base: "none", md: "block" }}
         nama={nama}
         profil={profil}
+        kebun={kebun}
+        menu={MenuUtama}
       />
 
       <Drawer
@@ -70,11 +81,17 @@ export function SidebarAkun({ children }) {
         size="full"
       >
         <DrawerContent>
-          <SidebarContent onClose={onClose} nama={nama} profil={profil} />
+          <SidebarContent
+            onClose={onClose}
+            nama={nama}
+            profil={profil}
+            kebun={kebun}
+            menu={MenuUtama}
+          />
         </DrawerContent>
       </Drawer>
 
-      <MobileNav onOpen={onOpen} />
+      <MobileNav onOpen={onOpen} kebun={kebun} menu={MenuUtama} />
 
       <Box ml={{ base: 0, md: 60 }} p="4">
         {children}
@@ -83,7 +100,7 @@ export function SidebarAkun({ children }) {
   );
 }
 
-function SidebarContent({ nama, profil, onClose, ...rest }) {
+function SidebarContent({ menu, kebun, nama, profil, onClose, ...rest }) {
   const routeName = usePathname();
 
   return (
@@ -102,47 +119,22 @@ function SidebarContent({ nama, profil, onClose, ...rest }) {
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
 
-      <Text
-        fontSize={"xs"}
-        color={"blackAlpha.400"}
-        fontWeight={"bold"}
-        mb={2}
-        mx={4}
-      >
-        MENU UTAMA
-      </Text>
-      <Stack spacing={2}>
-        {MenuUtama.map((link) =>
-          routeName == link.route ? (
-            <NavItem
-              key={link.name}
-              icon={link.icon}
-              bg={"gray.50"}
-              route={link.route}
-            >
-              {link.name}
-            </NavItem>
-          ) : (
-            <NavItem key={link.name} icon={link.icon} route={link.route}>
-              {link.name}
-            </NavItem>
-          )
-        )}
-      </Stack>
+      <NavItem icon={ArrowBackIcon} route={"/kebun"} bg={"gray.50"} mb={6}>
+        Kembali
+      </NavItem>
 
       <Text
         fontSize={"xs"}
         color={"blackAlpha.400"}
         fontWeight={"bold"}
         mb={2}
-        mt={6}
         mx={4}
       >
-        INFORMASI
+        {kebun.nama_kebun.toUpperCase()}
       </Text>
       <Stack spacing={2}>
-        {Informasi.map((link) =>
-          routeName == link.route ? (
+        {menu.map((link) =>
+          routeName == link.route || routeName == link.children?.route ? (
             <NavItem
               key={link.name}
               icon={link.icon}
@@ -231,20 +223,17 @@ function NavItem({ icon, route, children, ...rest }) {
   );
 }
 
-function MobileNav({ onOpen, ...rest }) {
+function MobileNav({ kebun, menu, onOpen, ...rest }) {
   const routeName = usePathname();
   const [namaHalaman, setNamaHalaman] = useState("");
 
   const getRouteName = (route) => {
-    const menu = MenuUtama.find((item) => item.route === route);
-    const informasi = Informasi.find((item) => item.route === route);
+    const currentMenu = menu.find(
+      (item) => item.route === route || item.children?.route === route
+    );
 
-    if (menu) {
-      setNamaHalaman(menu.name);
-    }
-
-    if (informasi) {
-      setNamaHalaman(informasi.name);
+    if (currentMenu) {
+      setNamaHalaman(currentMenu.name);
     }
   };
 
@@ -279,7 +268,7 @@ function MobileNav({ onOpen, ...rest }) {
         fontWeight="bold"
         color={"green.900"}
       >
-        {namaHalaman}
+        {namaHalaman === "Dasbor Kebun" ? kebun.nama_kebun : namaHalaman}
       </Text>
     </Flex>
   );
