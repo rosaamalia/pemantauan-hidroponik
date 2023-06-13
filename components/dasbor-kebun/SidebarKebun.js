@@ -32,10 +32,6 @@ import {
 
 export function SidebarKebun({ kebun, children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [nama, setNama] = useState("Kim Jiwoo 김지우");
-  const [profil, setProfil] = useState(
-    "https://i.pinimg.com/564x/6b/0a/ff/6b0aff7fd2d02a6394026c0551ad4226.jpg"
-  );
 
   const MenuUtama = [
     { name: "Dasbor Kebun", icon: IoStatsChart, route: `/kebun/${kebun.id}` },
@@ -56,7 +52,6 @@ export function SidebarKebun({ kebun, children }) {
       name: "Histori",
       icon: IoTimeSharp,
       route: `/kebun/${kebun.id}/histori`,
-      children: { route: `/kebun/${kebun.id}/histori/grafik` },
     },
   ];
 
@@ -65,8 +60,6 @@ export function SidebarKebun({ kebun, children }) {
       <SidebarContent
         onClose={() => onClose}
         display={{ base: "none", md: "block" }}
-        nama={nama}
-        profil={profil}
         kebun={kebun}
         menu={MenuUtama}
       />
@@ -81,13 +74,7 @@ export function SidebarKebun({ kebun, children }) {
         size="full"
       >
         <DrawerContent>
-          <SidebarContent
-            onClose={onClose}
-            nama={nama}
-            profil={profil}
-            kebun={kebun}
-            menu={MenuUtama}
-          />
+          <SidebarContent onClose={onClose} kebun={kebun} menu={MenuUtama} />
         </DrawerContent>
       </Drawer>
 
@@ -100,7 +87,7 @@ export function SidebarKebun({ kebun, children }) {
   );
 }
 
-function SidebarContent({ menu, kebun, nama, profil, onClose, ...rest }) {
+function SidebarContent({ menu, kebun, onClose, ...rest }) {
   const routeName = usePathname();
 
   return (
@@ -149,47 +136,6 @@ function SidebarContent({ menu, kebun, nama, profil, onClose, ...rest }) {
             </NavItem>
           )
         )}
-      </Stack>
-
-      <Stack mt={6} mx={4}>
-        <Box p={4} bg={"gray.50"} borderRadius="lg">
-          <Flex
-            direction={"row"}
-            justifyContent={"flex-start"}
-            alignItems={"center"}
-          >
-            <Avatar
-              name={nama}
-              w={10}
-              h={10}
-              borderRadius={"md"}
-              src={profil}
-              mr={4}
-            />
-            <Flex direction={"column"} justifyContent={"space-between"}>
-              <Text fontWeight={"semibold"} noOfLines={1}>
-                {nama}
-              </Text>
-              <Link
-                color={"blackAlpha.400"}
-                as={NextLink}
-                href="/profil"
-                fontSize={"xx-small"}
-                fontWeight={"bold"}
-              >
-                PROFIL SELENGKAPNYA
-              </Link>
-            </Flex>
-          </Flex>
-        </Box>
-        <Button
-          variant={"outline"}
-          colorScheme="gray"
-          rightIcon={<IoLogOut />}
-          size={"sm"}
-        >
-          Keluar
-        </Button>
       </Stack>
     </Box>
   );

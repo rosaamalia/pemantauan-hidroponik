@@ -2,14 +2,9 @@
 
 import { useState } from "react";
 import { Button, Flex, Stack, Text } from "@chakra-ui/react";
-import { daftarKebun } from "@utils/data";
 import { InputNotifikasi } from "@components/dasbor-kebun/InputNotifikasi";
 
-export default function Notifikasi({ params }) {
-  const [kebun, setKebun] = useState(
-    daftarKebun.find((obj) => obj.id === +params.id)
-  );
-
+export default function Notifikasi() {
   const [phMin, setPhMin] = useState(0);
   const [phMax, setPhMax] = useState(0);
   const [temperaturMin, setTemperaturMin] = useState(0);

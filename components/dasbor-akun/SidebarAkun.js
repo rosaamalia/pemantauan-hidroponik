@@ -2,7 +2,7 @@
 
 import NextLink from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import {
   Avatar,
@@ -85,6 +85,7 @@ export function SidebarAkun({ children }) {
 
 function SidebarContent({ nama, profil, onClose, ...rest }) {
   const routeName = usePathname();
+  const router = useRouter();
 
   return (
     <Box
@@ -160,7 +161,13 @@ function SidebarContent({ nama, profil, onClose, ...rest }) {
       </Stack>
 
       <Stack mt={6} mx={4}>
-        <Box p={4} bg={"gray.50"} borderRadius="lg">
+        <Box
+          p={4}
+          bg={"gray.50"}
+          borderRadius="lg"
+          cursor={"pointer"}
+          onClick={() => router.push("/profil")}
+        >
           <Flex
             direction={"row"}
             justifyContent={"flex-start"}
@@ -241,10 +248,10 @@ function MobileNav({ onOpen, ...rest }) {
 
     if (menu) {
       setNamaHalaman(menu.name);
-    }
-
-    if (informasi) {
+    } else if (informasi) {
       setNamaHalaman(informasi.name);
+    } else {
+      setNamaHalaman("Profil");
     }
   };
 
