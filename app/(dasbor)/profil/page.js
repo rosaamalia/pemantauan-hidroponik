@@ -1,19 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Box,
-  Flex,
-  Stack,
-  HStack,
-  Text,
-  FormControl,
-  FormLabel,
-  Input,
-  Image,
-  Button,
-} from "@chakra-ui/react";
-import { daftarKebun } from "@utils/data";
+import { Box, Flex, Stack, Text, Image, Button } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { EditIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 
@@ -76,7 +64,7 @@ export default function Profil({ params }) {
                 >
                   NOMOR WHATSAPP
                 </Text>
-                <Text>{akun.nomor_whatsapp}</Text>
+                <Text>+{akun.nomor_whatsapp}</Text>
               </Stack>
             </Flex>
           </Stack>
