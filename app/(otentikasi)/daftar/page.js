@@ -143,7 +143,6 @@ export default function Daftar() {
                     )
                   }
                   variant={"ghost"}
-                  aria-label={"Toggle Navigation"}
                 />
               </InputRightElement>
             </InputGroup>

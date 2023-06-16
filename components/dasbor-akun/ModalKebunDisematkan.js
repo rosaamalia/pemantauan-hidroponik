@@ -78,61 +78,65 @@ export default function ModalKebunDisematkan({
                   overflow={"hidden"}
                   key={kebun.id}
                 >
-                  <Flex direction={"row"} alignItems={"center"}>
-                    <Stack
-                      direction={"row"}
-                      width={"80%"}
-                      p={4}
-                      spacing={3}
-                      alignItems={"flex-start"}
-                    >
-                      {kebunDisematkan.includes(kebun.id) ? (
-                        <Checkbox
-                          colorScheme="green"
-                          defaultChecked
-                          onChange={(e) => {
-                            if (e.target.checked == true) {
-                              addItem(kebun.id);
-                            } else {
-                              removeItem(kebun.id);
-                            }
-                          }}
-                        />
-                      ) : (
-                        <Checkbox
-                          colorScheme="green"
-                          onChange={(e) => {
-                            if (e.target.checked == true) {
-                              addItem(kebun.id);
-                            } else {
-                              removeItem(kebun.id);
-                            }
-                          }}
-                        />
-                      )}
-                      <Stack direction={"column"}>
-                        <Text
-                          fontWeight={"semibold"}
-                          noOfLines={1}
-                          color={"green.900"}
-                        >
-                          {kebun.nama_kebun}
-                        </Text>
-                        <Text fontSize={"sm"} noOfLines={2}>
-                          {kebun.deskripsi}
-                        </Text>
+                  <label for={kebun.id}>
+                    <Flex direction={"row"} alignItems={"center"}>
+                      <Stack
+                        direction={"row"}
+                        width={"80%"}
+                        p={4}
+                        spacing={3}
+                        alignItems={"flex-start"}
+                      >
+                        {kebunDisematkan.includes(kebun.id) ? (
+                          <Checkbox
+                            colorScheme="green"
+                            id={kebun.id}
+                            defaultChecked
+                            onChange={(e) => {
+                              if (e.target.checked == true) {
+                                addItem(kebun.id);
+                              } else {
+                                removeItem(kebun.id);
+                              }
+                            }}
+                          />
+                        ) : (
+                          <Checkbox
+                            colorScheme="green"
+                            id={kebun.id}
+                            onChange={(e) => {
+                              if (e.target.checked == true) {
+                                addItem(kebun.id);
+                              } else {
+                                removeItem(kebun.id);
+                              }
+                            }}
+                          />
+                        )}
+                        <Stack direction={"column"}>
+                          <Text
+                            fontWeight={"semibold"}
+                            noOfLines={1}
+                            color={"green.900"}
+                          >
+                            {kebun.nama_kebun}
+                          </Text>
+                          <Text fontSize={"sm"} noOfLines={2}>
+                            {kebun.deskripsi}
+                          </Text>
+                        </Stack>
                       </Stack>
-                    </Stack>
 
-                    <Flex width={"20%"} height={28}>
-                      <Image
-                        width={"100%"}
-                        objectFit="cover"
-                        src={kebun.jenis_tanaman.foto}
-                        alt={kebun.jenis_tanaman.nama_tanaman}
-                      />
+                      <Flex width={"20%"} height={28}>
+                        <Image
+                          width={"100%"}
+                          objectFit="cover"
+                          src={kebun.jenis_tanaman.foto}
+                          alt={kebun.jenis_tanaman.nama_tanaman}
+                        />
+                      </Flex>
                     </Flex>
-                  </Flex>
+                  </label>
                 </Box>
               ))}
           </Stack>

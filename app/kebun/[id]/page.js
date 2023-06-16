@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Flex, Stack, HStack, Text } from "@chakra-ui/react";
+import { Flex, Code, Button, Stack, HStack, Text, OrderedList, ListItem } from "@chakra-ui/react";
 import { daftarKebun, rekomendasi } from "@utils/data";
 
 export default function Dasbor({ params }) {
@@ -22,8 +22,8 @@ export default function Dasbor({ params }) {
   );
 
   return (
-    <section>
-      <Flex justifyContent={"space-between"} wrap={"wrap"}>
+    <section style={{ height: "100vh"}}>
+      {/* <Flex justifyContent={"space-between"} wrap={"wrap"}>
         <Stack
           direction={"column"}
           spacing={4}
@@ -227,6 +227,19 @@ export default function Dasbor({ params }) {
             </Text>
           </Stack>
         </Stack>
+      </Flex> */}
+
+      <Flex direction={"column"} alignItems={"center"} justifyContent={"center"} height={"70vh"}>
+        <OrderedList>
+          <ListItem>Pada file Arduino.ino, temukan variabel id pada line 86</ListItem>
+          <ListItem>Salin id {kebun.id}, kemudian tempel pada variabel id di langkah 1</ListItem>
+          <Code colorScheme='green' children={`/* Tempel id ke variabel berikut */`} width={"100%"}/>
+          <Code colorScheme='green' children={`let id = ${kebun.id}`} width={"100%"}/>
+          <ListItem>Klik tombol di bawah untuk menghubungkan sistem</ListItem>
+        </OrderedList>
+        <Button colorScheme="green" width={"fit-content"} mt={2}>
+          Hubungkan Sistem
+        </Button>
       </Flex>
     </section>
   );

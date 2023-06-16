@@ -183,24 +183,26 @@ export default function TambahKebun() {
                       borderColor={"gray.200"}
                       overflow={"hidden"}
                     >
-                      <Flex
-                        justifyContent={"space-between"}
-                        direction={"row"}
-                        alignItems={"center"}
-                      >
-                        <Stack p={2}>
-                          <Radio colorScheme="green" value={String(tanaman.id)}>
-                            {tanaman.nama_tanaman}
-                          </Radio>
-                        </Stack>
-                        <Flex width={"12"} height={"12"}>
-                          <Image
-                            src={tanaman.foto}
-                            objectFit={"cover"}
-                            alt="Gambar jenis tanaman"
-                          />
+                      <label for={tanaman.id}>
+                        <Flex
+                          justifyContent={"space-between"}
+                          direction={"row"}
+                          alignItems={"center"}
+                        >
+                          <Stack p={2}>
+                            <Radio colorScheme="green" value={String(tanaman.id)} id={tanaman.id}>
+                              {tanaman.nama_tanaman}
+                            </Radio>
+                          </Stack>
+                          <Flex width={"12"} height={"12"}>
+                            <Image
+                              src={tanaman.foto}
+                              objectFit={"cover"}
+                              alt="Gambar jenis tanaman"
+                            />
+                          </Flex>
                         </Flex>
-                      </Flex>
+                      </label>
                     </Box>
                   ))}
                 </Stack>
