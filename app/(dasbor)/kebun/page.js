@@ -51,8 +51,6 @@ export default function SemuaKebun() {
   //     }
   //   };
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       sendData();

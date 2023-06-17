@@ -19,14 +19,20 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { useRouter } from "next/navigation";
+import AkunContext from "@context/akunContext";
+import { api } from "@utils/api";
 
 export default function Daftar() {
+  const router = useRouter();
+
   const [nama, setNama] = useState("");
   const [username, setUsername] = useState("");
   const [nomorWhatsapp, setNomorWhatsapp] = useState("");
   const [kataSandi, setKataSandi] = useState("");
   const [konfirmasiKataSandi, setKonfirmasiKataSandi] = useState("");
+  const [error, setError] = useState("");
 
   const [errorKonfirmasiKataSandi, setErrorKonfirmasiKataSandi] =
     useState(false);
@@ -43,15 +49,31 @@ export default function Daftar() {
   const handleShowKonfirmasiKataSandi = () =>
     setShowKonfirmasiKataSandi(!showKonfirmasiKataSandi);
 
-  const daftarAkun = () => {
-    let data = {
+  // Konteks akun
+  const { akunData, updateAkunData } = useContext(AkunContext);
+
+  const daftarAkun = async (e) => {
+    e.preventDefault();
+
+    let dataUser = {
       nama_pengguna: nama,
       username: username,
       kata_sandi: kataSandi,
       nomor_whatsapp: "62" + nomorWhatsapp,
     };
 
-    console.log(data);
+    try {
+      const response = await api.post("/api/auth/register", dataUser);
+      updateAkunData(response.data);
+
+      router.push("/verifikasi");
+    } catch (error) {
+      console.log(error);
+
+      if (error.response.data) {
+        setError(error.response.data.detail);
+      }
+    }
   };
 
   return (
@@ -66,37 +88,52 @@ export default function Daftar() {
           Daftar Akun
         </Heading>
         <Stack width={"100%"} spacing={6}>
-          <FormControl>
+          <FormControl isInvalid={error.nama_pengguna}>
             <FormLabel>Nama</FormLabel>
             <Input
               type="text"
               placeholder="John Doe"
-              onChange={(e) => setNama(e.target.value)}
+              onChange={(e) => {
+                setError("");
+                setNama(e.target.value);
+              }}
             />
-            {/* <FormHelperText>We&apos;ll never share your email.</FormHelperText> */}
+            {error.nama_pengguna && (
+              <FormErrorMessage>{error.nama_pengguna[0]}</FormErrorMessage>
+            )}
           </FormControl>
 
-          <FormControl>
+          <FormControl isInvalid={error.username}>
             <FormLabel>Username</FormLabel>
             <Input
               type="text"
               placeholder="johndoe"
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => {
+                setError("");
+                setUsername(e.target.value);
+              }}
             />
-            {/* <FormHelperText>We&apos;ll never share your email.</FormHelperText> */}
+            {error.username && (
+              <FormErrorMessage>{error.username[0]}</FormErrorMessage>
+            )}
           </FormControl>
 
-          <FormControl>
+          <FormControl isInvalid={error.nomor_whatsapp}>
             <FormLabel>Nomor WhatsApp</FormLabel>
             <InputGroup>
               <InputLeftAddon children="+62" />
               <Input
                 type="tel"
                 placeholder="8123456789"
-                onChange={(e) => setNomorWhatsapp(e.target.value)}
+                onChange={(e) => {
+                  setError("");
+                  setNomorWhatsapp(e.target.value);
+                }}
               />
             </InputGroup>
-            {/* <FormHelperText>We&apos;ll never share your email.</FormHelperText> */}
+            {error.nomor_whatsapp && (
+              <FormErrorMessage>{error.nomor_whatsapp[0]}</FormErrorMessage>
+            )}
           </FormControl>
 
           <FormControl>

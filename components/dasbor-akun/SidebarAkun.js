@@ -44,7 +44,7 @@ const Informasi = [
   },
 ];
 
-export function SidebarAkun({ children }) {
+export function SidebarAkun({ akun, children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [nama, setNama] = useState("Kim Jiwoo 김지우");
   const [profil, setProfil] = useState(
@@ -56,8 +56,7 @@ export function SidebarAkun({ children }) {
       <SidebarContent
         onClose={() => onClose}
         display={{ base: "none", md: "block" }}
-        nama={nama}
-        profil={profil}
+        akun={akun}
       />
 
       <Drawer
@@ -70,7 +69,7 @@ export function SidebarAkun({ children }) {
         size="full"
       >
         <DrawerContent>
-          <SidebarContent onClose={onClose} nama={nama} profil={profil} />
+          <SidebarContent onClose={onClose} akun={akun} />
         </DrawerContent>
       </Drawer>
 
@@ -83,7 +82,7 @@ export function SidebarAkun({ children }) {
   );
 }
 
-function SidebarContent({ nama, profil, onClose, ...rest }) {
+function SidebarContent({ akun, onClose, ...rest }) {
   const routeName = usePathname();
   const router = useRouter();
 
@@ -143,7 +142,7 @@ function SidebarContent({ nama, profil, onClose, ...rest }) {
       </Text>
       <Stack spacing={2}>
         {Informasi.map((link) =>
-          routeName == link.route ? (
+          routeName == link.route || routeName.includes(link.route) ? (
             <NavItem
               key={link.name}
               icon={link.icon}
@@ -174,16 +173,16 @@ function SidebarContent({ nama, profil, onClose, ...rest }) {
             alignItems={"center"}
           >
             <Avatar
-              name={nama}
+              name={akun.nama_pengguna}
               w={10}
               h={10}
               borderRadius={"md"}
-              src={profil}
+              src={akun.foto_profil}
               mr={4}
             />
             <Flex direction={"column"} justifyContent={"space-between"}>
               <Text fontWeight={"semibold"} noOfLines={1}>
-                {nama}
+                {akun.nama_pengguna}
               </Text>
               <Link
                 color={"blackAlpha.400"}
@@ -244,7 +243,9 @@ function MobileNav({ onOpen, ...rest }) {
 
   const getRouteName = (route) => {
     const menu = MenuUtama.find((item) => item.route === route);
-    const informasi = Informasi.find((item) => item.route === route);
+    const informasi = Informasi.find(
+      (item) => item.route === route || route.includes(item.route)
+    );
 
     if (menu) {
       setNamaHalaman(menu.name);

@@ -78,7 +78,7 @@ export default function ModalKebunDisematkan({
                   overflow={"hidden"}
                   key={kebun.id}
                 >
-                  <label for={kebun.id}>
+                  <label htmlFor={kebun.id}>
                     <Flex direction={"row"} alignItems={"center"}>
                       <Stack
                         direction={"row"}
