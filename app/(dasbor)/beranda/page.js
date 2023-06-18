@@ -1,7 +1,8 @@
 "use client";
 
+// import { getServerSideProps } from "next";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import {
   Box,
   Flex,
@@ -15,17 +16,76 @@ import { AiFillPushpin } from "react-icons/ai";
 import { KebunCard } from "@components/dasbor-akun/KebunCard";
 import ModalKebunDisematkan from "@components/dasbor-akun/ModalKebunDisematkan";
 import { KosongCard } from "@components/dasbor-akun/KosongCard";
-import { daftarKebun } from "@utils/data";
+import AkunContext from "@context/akunContext";
+import SemuaKebunContext from "@context/semuaKebunContext";
+import { api } from "@utils/api";
+
+// export async function getServerSideProps() {
+//   const token = JSON.parse(localStorage.getItem("token"));
+
+//   try {
+//     const response = await api.get(`/api/kebun-disematkan/`, {
+//       headers: {
+//         Authorization: `Bearer ${token.access}`,
+//       },
+//     });
+//     const data = response.data.data.kebun;
+//   } catch (error) {
+//     console.error(error);
+//   }
+
+//   return {
+//     props: {
+//       data,
+//     },
+//   };
+// }
 
 export default function Beranda() {
   const router = useRouter();
+  const { semuaKebunData } = useContext(SemuaKebunContext);
+  const { akunData } = useContext(AkunContext);
 
-  const [kebun, setKebun] = useState(0);
-  const [semuaKebun, setSemuaKebun] = useState(daftarKebun);
+  const [token, setToken] = useState(JSON.parse(localStorage.getItem("token")));
+  const [kebun, setKebun] = useState(akunData.data.jumlah_kebun);
+  const [semuaKebun, setSemuaKebun] = useState(semuaKebunData);
   const [kebunDisematkan, setKebunDisematkan] = useState([]);
 
-  const ubahSematan = (sematan) => {
-    setKebunDisematkan(sematan);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`/api/kebun-disematkan/`, {
+          headers: {
+            Authorization: `Bearer ${token.access}`,
+          },
+        });
+        const data = response.data.data.kebun;
+        setKebunDisematkan(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, [token]);
+
+  const ubahSematan = async (sematan) => {
+    console.log(sematan);
+    let dataSematan = {
+      kebun: sematan,
+    };
+
+    try {
+      const response = await api.put(`/api/kebun-disematkan/`, dataSematan, {
+        headers: {
+          Authorization: `Bearer ${token.access}`,
+        },
+      });
+      const data = response.data.data.kebun;
+      setKebunDisematkan(data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -107,24 +167,27 @@ export default function Beranda() {
       )}
 
       <Flex my={4} wrap={"wrap"} justifyContent={"space-between"}>
-        {semuaKebun
-          .filter((kebun) => kebunDisematkan.includes(kebun.id))
-          .map((kebun) => (
-            <KebunCard
-              width={{ base: "100%", md: "49%" }}
-              key={kebun.id}
-              kebun={kebun}
-            ></KebunCard>
-          ))}
+        {semuaKebun &&
+          semuaKebun
+            .filter((kebun) => kebunDisematkan.includes(kebun.id))
+            .map((kebun) => (
+              <KebunCard
+                width={{ base: "100%", md: "49%" }}
+                key={kebun.id}
+                kebun={kebun}
+              ></KebunCard>
+            ))}
       </Flex>
 
-      <ModalKebunDisematkan
-        isOpen={isOpen}
-        onClose={onClose}
-        semuaKebun={semuaKebun}
-        kebunDisematkan={kebunDisematkan}
-        ubahSematan={ubahSematan}
-      />
+      {kebunDisematkan.length != 0 && semuaKebun && (
+        <ModalKebunDisematkan
+          isOpen={isOpen}
+          onClose={onClose}
+          semuaKebun={semuaKebun}
+          kebunDisematkan={kebunDisematkan}
+          ubahSematan={ubahSematan}
+        />
+      )}
     </section>
   );
 }

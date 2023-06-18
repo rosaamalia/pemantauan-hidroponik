@@ -1,17 +1,62 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
+import { useRouter } from "next/navigation";
+import { useToast } from "@chakra-ui/react";
 import { SidebarKebun } from "@components/dasbor-kebun/SidebarKebun";
-import { daftarKebun } from "@utils/data";
+import KebunContext from "@context/kebunContext";
+import { api } from "@utils/api";
 
 export default function DasborKebunLayout({ children, params }) {
-  const [kebun, setKebun] = useState(
-    daftarKebun.find((obj) => obj.id === +params.id)
-  );
+  const router = useRouter();
+  const toast = useToast();
+
+  const { updateKebunData } = useContext(KebunContext);
+  const [kebunId, setKebunId] = useState(+params.id);
+  const [kebun, setKebun] = useState(null);
+
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem("token"));
+
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`/api/kebun/${kebunId}`, {
+          headers: {
+            Authorization: `Bearer ${token.access}`,
+          },
+        });
+
+        console.log(response.data.data);
+
+        setKebun(response.data.data);
+        updateKebunData(response.data.data);
+      } catch (error) {
+        console.error(error);
+
+        if (error.response?.status === 401) {
+          toast({
+            title: "Session berakhir",
+            description: "Anda harus melakukan login ulang.",
+            status: "info",
+            duration: 9000,
+            isClosable: true,
+          });
+
+          router.push("/masuk");
+        }
+      }
+    };
+
+    fetchData();
+  }, [router, toast, kebunId, updateKebunData]);
 
   return (
     <main>
-      <SidebarKebun kebun={kebun}>{children}</SidebarKebun>
+      {kebun ? (
+        <SidebarKebun kebun={kebun}>{children}</SidebarKebun>
+      ) : (
+        <p>Loading ...</p>
+      )}
     </main>
   );
 }

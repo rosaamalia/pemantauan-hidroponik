@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, Suspense } from "react";
 import {
   Flex,
@@ -14,7 +14,7 @@ import {
   Skeleton,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
-import { IoAddCircle } from "react-icons/io5";
+import { RiArrowGoBackLine } from "react-icons/ri";
 import { KebunCard } from "@components/dasbor-akun/KebunCard";
 import { KosongCard } from "@components/dasbor-akun/KosongCard";
 import Paginasi from "@components/dasbor-akun/Paginasi";
@@ -22,9 +22,10 @@ import { api } from "@utils/api";
 
 export default function SemuaKebun() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [semuaKebun, setSemuaKebun] = useState([]);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(searchParams.get("query"));
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(4);
@@ -38,11 +39,14 @@ export default function SemuaKebun() {
 
     const fetchData = async (page) => {
       try {
-        const response = await api.get(`/api/kebun/?page=${page}`, {
-          headers: {
-            Authorization: `Bearer ${token.access}`,
-          },
-        });
+        const response = await api.get(
+          `/api/kebun/cari?q=${query}&page=${page}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token.access}`,
+            },
+          }
+        );
         const data = response.data.results;
         setSemuaKebun(data);
         setTotalItems(response.data.count);
@@ -52,7 +56,7 @@ export default function SemuaKebun() {
     };
 
     fetchData(currentPage);
-  }, [currentPage]);
+  }, [currentPage, query]);
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -62,7 +66,11 @@ export default function SemuaKebun() {
 
   const sendData = async () => {
     console.log("Data yang dikirim:", query);
-    router.push(`/kebun/cari?query=${query}`);
+    if (query == "") {
+      router.push("/kebun");
+    } else {
+      router.push(`/kebun/cari?query=${query}`);
+    }
   };
 
   return (
@@ -104,11 +112,11 @@ export default function SemuaKebun() {
             {semuaKebun.length == 0 ? (
               <KosongCard
                 pathGambar={"/images/dasbor-kebun/bunga-matahari.png"}
-                heading={"Belum ada kebun!"}
-                deskripsi={"Tambah kebun untuk memulai monitor."}
-                teksTombol={"Tambah Kebun"}
-                ikon={<IoAddCircle />}
-                onClick={() => router.push("/tambah-kebun")}
+                heading={"Kebun tidak ditemukan!"}
+                deskripsi={`Kebun dengan kata kunci "${query}" tidak ditemukan`}
+                teksTombol={"Semua Kebun"}
+                ikon={<RiArrowGoBackLine />}
+                onClick={() => router.push("/kebun")}
                 width={{ base: "100%", md: "49%" }}
               />
             ) : (

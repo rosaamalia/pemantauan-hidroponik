@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Flex,
   Code,
@@ -11,32 +11,60 @@ import {
   OrderedList,
   ListItem,
 } from "@chakra-ui/react";
-import { daftarKebun, rekomendasi } from "@utils/data";
+import { w3cwebsocket as W3CWebSocket } from "websocket";
+import { rekomendasi } from "@utils/data";
+import KebunContext from "@context/kebunContext";
 
 export default function Dasbor({ params }) {
-  const [data, setData] = useState({
-    // id_kebun: 1,
-    // ph: 7.7,
-    // temperatur: 32,
-    // tds: 523,
-    // intensitas_cahaya: 865,
-    // kelembapan: 51,
-    // hasil_rekomendasi: rekomendasi.find((item) => item.hasil_rekomendasi === 15)
-    //   ?.tindakan,
-    // created_at: "Rabu, 22 Maret 2023, 2:36 AM",
-  });
+  const { kebunData } = useContext(KebunContext);
+  const [data, setData] = useState({});
+  const [tindakan, setTindakan] = useState([]);
 
-  const [kebun, setKebun] = useState(
-    daftarKebun.find((obj) => obj.id === +params.id)
-  );
+  useEffect(() => {
+    const realTimeData = () => {
+      const client = new W3CWebSocket(
+        `ws://192.168.1.15:8000/kebun/${kebunData.id}/data/terbaru`
+      );
+
+      client.onopen = () => {
+        console.log("Connected to WebSocket server");
+
+        client.send(
+          JSON.stringify({
+            id_kebun: kebunData.id,
+          })
+        );
+      };
+
+      client.onmessage = (message) => {
+        console.log("Received message:", JSON.parse(message.data));
+        const received = JSON.parse(message.data);
+        setData(received.message);
+        setTindakan(
+          rekomendasi.find(
+            (item) =>
+              item.hasil_rekomendasi === +received.message.hasil_rekomendasi
+          )?.tindakan
+        );
+      };
+
+      return () => {
+        // Tutup koneksi WebSocket saat komponen di-unmount
+        client.close();
+      };
+    };
+
+    realTimeData();
+  }, [kebunData, tindakan]);
 
   const ambilData = () => {
-    console.log("ambil data kebun ", kebun.id);
+    console.log("ambil data kebun ", +params.id);
+    realTimeData();
   };
 
   return (
-    <section style={{ height: "100vh" }}>
-      {Object.keys(data).length === 0 ? (
+    <section>
+      {Object.keys(data).length === 0 || data.id_kebun == null ? (
         <Flex
           direction={"column"}
           alignItems={"center"}
@@ -48,7 +76,8 @@ export default function Dasbor({ params }) {
               Pada file Arduino.ino, temukan variabel id pada line 86
             </ListItem>
             <ListItem>
-              Salin id {kebun.id}, kemudian tempel pada variabel id di langkah 1
+              Salin id {params.id}, kemudian tempel pada variabel id di langkah
+              1
             </ListItem>
             <Code
               colorScheme="green"
@@ -57,7 +86,7 @@ export default function Dasbor({ params }) {
             />
             <Code
               colorScheme="green"
-              children={`let id = ${kebun.id}`}
+              children={`let id = ${params.id}`}
               width={"100%"}
             />
             <ListItem>Klik tombol di bawah untuk menghubungkan sistem</ListItem>
@@ -72,7 +101,7 @@ export default function Dasbor({ params }) {
           </Button>
         </Flex>
       ) : (
-        <Flex justifyContent={"space-between"} wrap={"wrap"}>
+        <Flex justifyContent={"space-between"} wrap={"wrap"} mb={4}>
           <Stack
             direction={"column"}
             spacing={4}
@@ -98,29 +127,30 @@ export default function Dasbor({ params }) {
                 <Text color={"white"}>{data.created_at}</Text>
               </Flex>
 
-              {data.hasil_rekomendasi.map((tindakan) => (
-                <Flex
-                  p={4}
-                  direction={"row"}
-                  justifyContent={"space-between"}
-                  alignItems={"center"}
-                  borderRadius={"lg"}
-                  bg={"green.800"}
-                  color={"white"}
-                  key={tindakan.parameter}
-                >
-                  <Flex direction={"column"}>
-                    <Text fontSize={"sm"}>{tindakan.deskripsi}</Text>
-                    <HStack fontSize={"xs"} fontWeight={"light"}>
-                      <Text>{tindakan.label} :</Text>
-                      <Text color={"yellow.200"}>
-                        {data[tindakan.parameter]}
-                      </Text>
-                    </HStack>
+              {tindakan.length != 0 &&
+                tindakan.map((tindakan) => (
+                  <Flex
+                    p={4}
+                    direction={"row"}
+                    justifyContent={"space-between"}
+                    alignItems={"center"}
+                    borderRadius={"lg"}
+                    bg={"green.800"}
+                    color={"white"}
+                    key={tindakan.parameter}
+                  >
+                    <Flex direction={"column"}>
+                      <Text fontSize={"sm"}>{tindakan.deskripsi}</Text>
+                      <HStack fontSize={"xs"} fontWeight={"light"}>
+                        <Text>{tindakan.label} :</Text>
+                        <Text color={"yellow.200"}>
+                          {data[tindakan.parameter]}
+                        </Text>
+                      </HStack>
+                    </Flex>
+                    <Text fontSize={"xx-large"}>{tindakan.emoji}</Text>
                   </Flex>
-                  <Text fontSize={"xx-large"}>{tindakan.emoji}</Text>
-                </Flex>
-              ))}
+                ))}
             </Stack>
 
             <Flex
@@ -243,7 +273,7 @@ export default function Dasbor({ params }) {
             <Stack
               direction={"column"}
               p={6}
-              backgroundImage={`url(${kebun.jenis_tanaman.foto})`}
+              backgroundImage={`url(${kebunData.jenis_tanaman.foto})`}
               borderRadius={"lg"}
               border={"1px"}
               borderColor={"gray.200"}

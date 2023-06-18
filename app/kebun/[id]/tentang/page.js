@@ -1,27 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useContext } from "react";
 import {
   Box,
   Flex,
   Stack,
-  HStack,
   Text,
   FormControl,
   FormLabel,
-  Input,
   Image,
   Button,
 } from "@chakra-ui/react";
-import { daftarKebun } from "@utils/data";
 import { useRouter } from "next/navigation";
 import { EditIcon } from "@chakra-ui/icons";
+import KebunContext from "@context/kebunContext";
 
-export default function Tentang({ params }) {
+export default function Tentang() {
   const router = useRouter();
-  const [kebun, setKebun] = useState(
-    daftarKebun.find((obj) => obj.id === +params.id)
-  );
+  const { kebunData } = useContext(KebunContext);
 
   return (
     <section>
@@ -33,22 +29,22 @@ export default function Tentang({ params }) {
         >
           <FormControl>
             <FormLabel>ID Kebun</FormLabel>
-            <Text fontSize={"sm"}>{kebun.id}</Text>
+            <Text fontSize={"sm"}>{kebunData.id}</Text>
           </FormControl>
 
           <FormControl>
             <FormLabel>Nama Kebun</FormLabel>
-            <Text fontSize={"sm"}>{kebun.nama_kebun}</Text>
+            <Text fontSize={"sm"}>{kebunData.nama_kebun}</Text>
           </FormControl>
 
           <FormControl>
             <FormLabel>Deskripsi</FormLabel>
-            <Text fontSize={"sm"}>{kebun.deskripsi}</Text>
+            <Text fontSize={"sm"}>{kebunData.deskripsi}</Text>
           </FormControl>
 
           <FormControl>
             <FormLabel>Alamat</FormLabel>
-            <Text fontSize={"sm"}>{kebun.alamat}</Text>
+            <Text fontSize={"sm"}>{kebunData.alamat}</Text>
           </FormControl>
 
           <FormControl>
@@ -67,11 +63,11 @@ export default function Tentang({ params }) {
                 alignItems={"center"}
               >
                 <Stack p={4}>
-                  <Text>{kebun.jenis_tanaman.nama_tanaman}</Text>
+                  <Text>{kebunData.jenis_tanaman.nama_tanaman}</Text>
                 </Stack>
                 <Flex width={"16"} height={"16"}>
                   <Image
-                    src={kebun.jenis_tanaman.foto}
+                    src={kebunData.jenis_tanaman.foto}
                     objectFit={"cover"}
                     alt="Gambar jenis tanaman"
                   />
@@ -87,7 +83,7 @@ export default function Tentang({ params }) {
             variant={"outline"}
             rightIcon={<EditIcon />}
             width={{ base: "100%", md: "fit-content" }}
-            onClick={() => router.push(`/kebun/${kebun.id}/tentang/edit`)}
+            onClick={() => router.push(`/kebun/${kebunData.id}/tentang/edit`)}
           >
             Edit Informasi Kebun
           </Button>

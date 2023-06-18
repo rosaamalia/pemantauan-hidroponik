@@ -26,6 +26,7 @@
     "react-dom": "18.2.0",
     "react-icons": "^4.9.0",
     "react-leaflet": "^4.2.1",
-    "react-use": "^17.4.0"
+    "react-use": "^17.4.0",
+    "websocket": "^1.0.34"
   }
 }

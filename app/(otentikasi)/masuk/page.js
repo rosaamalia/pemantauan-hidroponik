@@ -7,35 +7,50 @@ import {
   Stack,
   Input,
   InputGroup,
-  InputLeftAddon,
   InputRightElement,
   IconButton,
   FormControl,
   FormLabel,
-  FormHelperText,
-  FormErrorMessage,
   Button,
   Link,
   Text,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import AkunContext from "@context/akunContext";
+import { api } from "@utils/api";
+import { useRouter } from "next/navigation";
 
 export default function Masuk() {
+  const router = useRouter();
+  const { updateAkunData } = useContext(AkunContext);
   const [username, setUsername] = useState("");
   const [kataSandi, setKataSandi] = useState("");
+  const [error, setError] = useState("");
 
   const [showKataSandi, setShowKataSandi] = useState(false);
 
   const handleShowKataSandi = () => setShowKataSandi(!showKataSandi);
 
-  const masukAkun = () => {
-    let data = {
+  const masukAkun = async (e) => {
+    e.preventDefault();
+
+    let dataUser = {
       username: username,
       kata_sandi: kataSandi,
     };
 
-    console.log(data);
+    try {
+      const response = await api.post("/api/auth/login", dataUser);
+      updateAkunData(response.data);
+
+      localStorage.setItem("token", JSON.stringify(response.data.token));
+      router.push("/beranda");
+    } catch (error) {
+      if (error.response.data) {
+        setError(error.response.data.detail);
+      }
+    }
   };
 
   return (
@@ -58,9 +73,11 @@ export default function Masuk() {
             <Input
               type="text"
               placeholder="johndoe"
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => {
+                setError("");
+                setUsername(e.target.value);
+              }}
             />
-            {/* <FormHelperText>We&apos;ll never share your email.</FormHelperText> */}
           </FormControl>
 
           <FormControl>
@@ -69,7 +86,10 @@ export default function Masuk() {
               <Input
                 type={showKataSandi ? "text" : "password"}
                 placeholder="Kata sandi"
-                onChange={(e) => setKataSandi(e.target.value)}
+                onChange={(e) => {
+                  setError("");
+                  setKataSandi(e.target.value);
+                }}
               />
               <InputRightElement>
                 <IconButton
@@ -87,6 +107,21 @@ export default function Masuk() {
               </InputRightElement>
             </InputGroup>
           </FormControl>
+
+          {error != "" && (
+            <Flex
+              direction={"row"}
+              bg={"red.50"}
+              borderRadius={"lg"}
+              p={2}
+              alignItems={"center"}
+            >
+              <Text fontSize={"xl"}>⚠️</Text>
+              <Text color={"red.800"} fontSize={"sm"} ml={2}>
+                {error}
+              </Text>
+            </Flex>
+          )}
 
           {(username === "") | (kataSandi === "") ? (
             <Button colorScheme="green" isDisabled>

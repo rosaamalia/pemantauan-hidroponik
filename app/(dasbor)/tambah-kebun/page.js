@@ -1,9 +1,8 @@
 "use client";
 
-import NextLink from "next/link";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   Button,
   Box,
@@ -21,16 +20,25 @@ import {
   InputLeftElement,
   Radio,
   RadioGroup,
+  Skeleton,
+  useToast,
 } from "@chakra-ui/react";
 import { IoMap } from "react-icons/io5";
-import { jenis_tanaman } from "@utils/data";
+import JenisTanamanContext from "@context/jenisTanamanContext";
+import { api } from "@utils/api";
 
 export default function TambahKebun() {
+  const toast = useToast();
   const router = useRouter();
+  const { jenisTanamanData } = useContext(JenisTanamanContext);
+
   const [namaKebun, setNamaKebun] = useState("");
   const [deskripsi, setDeskripsi] = useState("");
   const [alamat, setAlamat] = useState("");
-  const [jenisTanaman, setJenisTanaman] = useState("1");
+  const [jenisTanaman, setJenisTanaman] = useState(
+    jenisTanamanData ? String(jenisTanamanData[0].id) : "1"
+  );
+  const [error, setError] = useState("");
 
   const [currentLocation, setCurrentLocation] = useState({
     latitude: "",
@@ -70,8 +78,11 @@ export default function TambahKebun() {
     ssr: false,
   });
 
-  const tambahKebun = () => {
-    let data = {
+  const tambahKebun = async (e) => {
+    e.preventDefault();
+    const token = JSON.parse(localStorage.getItem("token"));
+
+    let dataKebun = {
       nama_kebun: namaKebun,
       deskripsi: deskripsi,
       latitude: latitude,
@@ -80,7 +91,41 @@ export default function TambahKebun() {
       id_jenis_tanaman: +jenisTanaman,
     };
 
-    console.log(data);
+    try {
+      const response = await api.post("/api/kebun/", dataKebun, {
+        headers: {
+          Authorization: `Bearer ${token.access}`,
+        },
+      });
+      console.log(response.data);
+
+      toast({
+        title: "Berhasil",
+        description: response.data.message,
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+
+      setNamaKebun("");
+      setDeskripsi("");
+    } catch (error) {
+      console.log(error);
+
+      if (error.response.data) {
+        setError(error.response.data.detail);
+      }
+
+      if (error.response.status != 400) {
+        toast({
+          title: "Error",
+          description: error.response.data.detail,
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      }
+    }
   };
 
   return (
@@ -99,7 +144,7 @@ export default function TambahKebun() {
 
         <Flex wrap={"wrap"} justifyContent={"space-between"} width={"100%"}>
           <Stack width={{ base: "100%", md: "49%" }} spacing={6}>
-            <FormControl>
+            <FormControl isInvalid={error.nama_kebun}>
               <FormLabel>Nama Kebun</FormLabel>
               <FormHelperText color={"gray.400"} fontSize={"xs"}>
                 Nama kebun maksimal terdiri dari 50 karakter dan harus unik.
@@ -108,11 +153,17 @@ export default function TambahKebun() {
                 mt={2}
                 type="text"
                 placeholder="Kebun Tomat"
-                onChange={(e) => setNamaKebun(e.target.value)}
+                onChange={(e) => {
+                  setError("");
+                  setNamaKebun(e.target.value);
+                }}
               />
+              {error.nama_kebun && (
+                <FormErrorMessage>{error.nama_kebun[0]}</FormErrorMessage>
+              )}
             </FormControl>
 
-            <FormControl>
+            <FormControl isInvalid={error.deskripsi}>
               <FormLabel>Deskripsi Kebun</FormLabel>
               <FormHelperText color={"gray.400"} fontSize={"xs"}>
                 Deskripsi kebun maksimal terdiri dari 1000 karakter.
@@ -120,8 +171,14 @@ export default function TambahKebun() {
               <Textarea
                 mt={2}
                 placeholder="Kebun tomat jenis tomat buah yang menggunakan nutrisi A"
-                onChange={(e) => setDeskripsi(e.target.value)}
+                onChange={(e) => {
+                  setError("");
+                  setDeskripsi(e.target.value);
+                }}
               ></Textarea>
+              {error.deskripsi && (
+                <FormErrorMessage>{error.deskripsi[0]}</FormErrorMessage>
+              )}
             </FormControl>
 
             <FormControl>
@@ -173,42 +230,50 @@ export default function TambahKebun() {
                 mt={2}
               >
                 <Stack direction="column" spacing={2}>
-                  {jenis_tanaman.map((tanaman) => (
-                    <Box
-                      key={tanaman.id}
-                      width={"100%"}
-                      bg={"white"}
-                      borderRadius={"lg"}
-                      border={"1px"}
-                      borderColor={"gray.200"}
-                      overflow={"hidden"}
-                    >
-                      <label htmlFor={tanaman.id}>
-                        <Flex
-                          justifyContent={"space-between"}
-                          direction={"row"}
-                          alignItems={"center"}
-                        >
-                          <Stack p={2}>
-                            <Radio
-                              colorScheme="green"
-                              value={String(tanaman.id)}
-                              id={tanaman.id}
-                            >
-                              {tanaman.nama_tanaman}
-                            </Radio>
-                          </Stack>
-                          <Flex width={"12"} height={"12"}>
-                            <Image
-                              src={tanaman.foto}
-                              objectFit={"cover"}
-                              alt="Gambar jenis tanaman"
-                            />
+                  {jenisTanamanData == null ? (
+                    <>
+                      <Skeleton height={12} />
+                      <Skeleton height={12} />
+                      <Skeleton height={12} />
+                    </>
+                  ) : (
+                    jenisTanamanData.map((tanaman) => (
+                      <Box
+                        key={tanaman.id}
+                        width={"100%"}
+                        bg={"white"}
+                        borderRadius={"lg"}
+                        border={"1px"}
+                        borderColor={"gray.200"}
+                        overflow={"hidden"}
+                      >
+                        <label htmlFor={tanaman.id}>
+                          <Flex
+                            justifyContent={"space-between"}
+                            direction={"row"}
+                            alignItems={"center"}
+                          >
+                            <Stack p={2}>
+                              <Radio
+                                colorScheme="green"
+                                value={String(tanaman.id)}
+                                id={tanaman.id}
+                              >
+                                {tanaman.nama_tanaman}
+                              </Radio>
+                            </Stack>
+                            <Flex width={"12"} height={"12"}>
+                              <Image
+                                src={tanaman.foto}
+                                objectFit={"cover"}
+                                alt="Gambar jenis tanaman"
+                              />
+                            </Flex>
                           </Flex>
-                        </Flex>
-                      </label>
-                    </Box>
-                  ))}
+                        </label>
+                      </Box>
+                    ))
+                  )}
                 </Stack>
               </RadioGroup>
             </FormControl>

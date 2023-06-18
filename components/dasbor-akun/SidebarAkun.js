@@ -33,7 +33,7 @@ import {
 const MenuUtama = [
   { name: "Beranda", icon: IoHome, route: "/beranda" },
   { name: "Semua Kebun", icon: IoFlower, route: "/kebun" },
-  { name: "Tambah Kebun", icon: IoAddCircle, route: "/kebun/tambah" },
+  { name: "Tambah Kebun", icon: IoAddCircle, route: "/tambah-kebun" },
 ];
 const Informasi = [
   { name: "Informasi Tanaman", icon: IoNewspaper, route: "/informasi-tanaman" },
@@ -113,7 +113,7 @@ function SidebarContent({ akun, onClose, ...rest }) {
       </Text>
       <Stack spacing={2}>
         {MenuUtama.map((link) =>
-          routeName == link.route ? (
+          routeName == link.route || routeName.includes(link.route) ? (
             <NavItem
               key={link.name}
               icon={link.icon}
@@ -242,7 +242,9 @@ function MobileNav({ onOpen, ...rest }) {
   const [namaHalaman, setNamaHalaman] = useState("");
 
   const getRouteName = (route) => {
-    const menu = MenuUtama.find((item) => item.route === route);
+    const menu = MenuUtama.find(
+      (item) => item.route === route || route.includes(item.route)
+    );
     const informasi = Informasi.find(
       (item) => item.route === route || route.includes(item.route)
     );
