@@ -1,6 +1,6 @@
 export function formatDate(date) {
   const [year, month, day] = date.split("-");
-  return `${day}-${month}-${year}`;
+  return `${year}-${month}-${day}`;
 }
 
 export function today() {

@@ -8,26 +8,78 @@ export default function Paginasi({
   currentPage,
   paginate,
 }) {
-  const pageNumbers = [];
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const pageRangeDisplayed = 2; // Jumlah tombol halaman yang ditampilkan
+  const ellipsis = "...";
 
-  for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
-    pageNumbers.push(i);
-  }
+  // Fungsi untuk menghasilkan daftar halaman yang akan ditampilkan
+  const generatePageNumbers = () => {
+    const pageNumbers = [];
+    let startPage = 1;
+    let endPage = totalPages;
+
+    if (totalPages > pageRangeDisplayed) {
+      const middlePage = Math.floor(pageRangeDisplayed / 2);
+
+      if (currentPage <= middlePage) {
+        endPage = pageRangeDisplayed;
+      } else if (currentPage >= totalPages - middlePage) {
+        startPage = totalPages - pageRangeDisplayed + 1;
+      } else {
+        startPage = currentPage - middlePage;
+        endPage = currentPage + middlePage;
+      }
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+
+    if (startPage > 1) {
+      pageNumbers.unshift(ellipsis);
+    }
+
+    if (endPage < totalPages) {
+      pageNumbers.push(ellipsis);
+    }
+
+    return pageNumbers;
+  };
+
+  const renderedPages = generatePageNumbers();
 
   return (
     <Flex mt={4} justifyContent={"center"} width={"100%"}>
       <Stack direction="row" spacing={2}>
-        {pageNumbers.map((number) => (
+        <Button
+          size="sm"
+          variant="outline"
+          colorScheme="green"
+          onClick={() => paginate(currentPage - 1)}
+        >
+          ←
+        </Button>
+
+        {renderedPages.map((number, index) => (
           <Button
-            key={number}
+            key={index}
             size="sm"
             variant={currentPage === number ? "solid" : "outline"}
             colorScheme="green"
             onClick={() => paginate(number)}
           >
-            {number}
+            {number === ellipsis ? ellipsis : number}
           </Button>
         ))}
+
+        <Button
+          size="sm"
+          variant="outline"
+          colorScheme="green"
+          onClick={() => paginate(currentPage + 1)}
+        >
+          →
+        </Button>
       </Stack>
     </Flex>
   );

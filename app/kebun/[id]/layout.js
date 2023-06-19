@@ -3,6 +3,7 @@
 import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@chakra-ui/react";
+import Loader from "@components/Loader";
 import { SidebarKebun } from "@components/dasbor-kebun/SidebarKebun";
 import KebunContext from "@context/kebunContext";
 import { api } from "@utils/api";
@@ -11,7 +12,7 @@ export default function DasborKebunLayout({ children, params }) {
   const router = useRouter();
   const toast = useToast();
 
-  const { updateKebunData } = useContext(KebunContext);
+  const { kebunData, updateKebunData } = useContext(KebunContext);
   const [kebunId, setKebunId] = useState(+params.id);
   const [kebun, setKebun] = useState(null);
 
@@ -50,12 +51,18 @@ export default function DasborKebunLayout({ children, params }) {
     fetchData();
   }, [router, toast, kebunId, updateKebunData]);
 
+  useEffect(() => {
+    if (kebunData) {
+      setKebun(kebunData);
+    }
+  }, [kebunData, setKebun]);
+
   return (
     <main>
       {kebun ? (
         <SidebarKebun kebun={kebun}>{children}</SidebarKebun>
       ) : (
-        <p>Loading ...</p>
+        <Loader />
       )}
     </main>
   );

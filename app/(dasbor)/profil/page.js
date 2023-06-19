@@ -1,20 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import { Box, Flex, Stack, Text, Image, Button } from "@chakra-ui/react";
+import { useState, useContext } from "react";
+import {
+  Avatar,
+  Box,
+  Flex,
+  Stack,
+  Text,
+  Image,
+  Button,
+} from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { EditIcon, ArrowForwardIcon } from "@chakra-ui/icons";
+import AkunContext from "@context/akunContext";
 
-export default function Profil({ params }) {
+export default function Profil() {
   const router = useRouter();
-  const [akun, setAkun] = useState({
-    nama: "Kim Jiwoo 김지우",
-    username: "kimjiwoo",
-    foto_profil:
-      "https://i.pinimg.com/564x/6b/0a/ff/6b0aff7fd2d02a6394026c0551ad4226.jpg",
-    nomor_whatsapp: "62000000000",
-    jumlah_kebun: 10,
-  });
+  const { akunData } = useContext(AkunContext);
 
   return (
     <section>
@@ -26,12 +28,12 @@ export default function Profil({ params }) {
           alignItems={"flex-start"}
         >
           <Stack direction={"row"} spacing={4}>
-            <Image
-              src={akun.foto_profil}
-              width={32}
-              height={32}
-              objectFit={"cover"}
+            <Avatar
+              name={akunData.data.nama_pengguna}
+              w={32}
+              h={32}
               borderRadius={"lg"}
+              src={akunData.data.foto_profil}
               alt="Foto profil"
             />
             <Flex
@@ -49,10 +51,10 @@ export default function Profil({ params }) {
                 </Text>
                 <Flex alignItems={"flex-start"} wrap={"wrap"}>
                   <Text mr={2} noOfLines={1}>
-                    {akun.nama}
+                    {akunData.data.nama_pengguna}
                   </Text>
                   <Text fontSize={"xs"} color={"gray.500"}>
-                    (@{akun.username})
+                    (@{akunData.data.username})
                   </Text>
                 </Flex>
               </Stack>
@@ -64,7 +66,7 @@ export default function Profil({ params }) {
                 >
                   NOMOR WHATSAPP
                 </Text>
-                <Text>+{akun.nomor_whatsapp}</Text>
+                <Text>+{akunData.data.nomor_whatsapp}</Text>
               </Stack>
             </Flex>
           </Stack>
@@ -96,7 +98,7 @@ export default function Profil({ params }) {
                 JUMLAH KEBUN
               </Text>
               <Text fontWeight={"semibold"} color={"green.900"}>
-                {akun.jumlah_kebun} Kebun
+                {akunData.data.jumlah_kebun} Kebun
               </Text>
             </Stack>
 
@@ -105,7 +107,7 @@ export default function Profil({ params }) {
               size={"sm"}
               rightIcon={<ArrowForwardIcon />}
               onClick={() => {
-                router.push("/semua-kebun");
+                router.push("/kebun");
               }}
             >
               Lihat Semua Kebun

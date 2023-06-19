@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Button, Flex, Stack, Text, Input } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { Button, Flex, Stack, Text, Input, useToast } from "@chakra-ui/react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -13,6 +13,7 @@ import {
 import { Bar } from "react-chartjs-2";
 import { rata_rata } from "@utils/data";
 import { mendapatkanTanggal } from "@utils/helper";
+import { api } from "@utils/api";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
@@ -20,21 +21,53 @@ const options = {
   responsive: true,
 };
 
-export default function HistoriGrafik() {
-  const [label, setLabel] = useState(mendapatkanTanggal(rata_rata));
-  const [dataPh, setDataPh] = useState(rata_rata.filter((obj) => "ph" in obj));
-  const [dataTemperatur, setDataTemperatur] = useState(
-    rata_rata.filter((obj) => "temperatur" in obj)
-  );
-  const [dataTds, setDataTds] = useState(
-    rata_rata.filter((obj) => "tds" in obj)
-  );
-  const [dataIntensitasCahaya, setDataIntensitasCahaya] = useState(
-    rata_rata.filter((obj) => "intensitas_cahaya" in obj)
-  );
-  const [dataKelembapan, setDataKelembapan] = useState(
-    rata_rata.filter((obj) => "kelembapan" in obj)
-  );
+export default function HistoriGrafik({ idKebun }) {
+  const toast = useToast();
+  const [label, setLabel] = useState([]);
+  const [dataPh, setDataPh] = useState([]);
+  const [dataTemperatur, setDataTemperatur] = useState([]);
+  const [dataTds, setDataTds] = useState([]);
+  const [dataIntensitasCahaya, setDataIntensitasCahaya] = useState([]);
+  const [dataKelembapan, setDataKelembapan] = useState([]);
+
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem("token"));
+
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`/api/kebun/${idKebun}/data/rata-rata`, {
+          headers: {
+            Authorization: `Bearer ${token.access}`,
+          },
+        });
+        const data = response.data.data;
+        setLabel(mendapatkanTanggal(data));
+        setDataPh(data.filter((obj) => "ph" in obj));
+        setDataTemperatur(data.filter((obj) => "temperatur" in obj));
+        setDataTds(data.filter((obj) => "tds" in obj));
+        setDataIntensitasCahaya(
+          data.filter((obj) => "intensitas_cahaya" in obj)
+        );
+        setDataKelembapan(data.filter((obj) => "kelembapan" in obj));
+
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+
+        if (error.response?.status != 401) {
+          toast({
+            title: "Error",
+            description: error.response?.data?.detail || "Server error",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
+        }
+      }
+    };
+
+    fetchData();
+  }, [idKebun, toast]);
 
   const dataParameter = [
     {

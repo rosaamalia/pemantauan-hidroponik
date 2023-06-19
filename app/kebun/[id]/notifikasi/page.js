@@ -1,10 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { Button, Flex, Stack, Text } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { Button, Flex, Stack, Text, useToast } from "@chakra-ui/react";
 import { InputNotifikasi } from "@components/dasbor-kebun/InputNotifikasi";
+import { api } from "@utils/api";
 
-export default function Notifikasi() {
+export default function Notifikasi({ params }) {
+  const toast = useToast();
+  const [kebunId, setKebunId] = useState(+params.id);
+  const [token, setToken] = useState(JSON.parse(localStorage.getItem("token")));
+
   const [phMin, setPhMin] = useState(0);
   const [phMax, setPhMax] = useState(0);
   const [temperaturMin, setTemperaturMin] = useState(0);
@@ -59,8 +64,62 @@ export default function Notifikasi() {
     },
   ];
 
-  const simpanNotifikasi = () => {
-    let data = {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`/api/kebun/${kebunId}/notifikasi`, {
+          headers: {
+            Authorization: `Bearer ${token.access}`,
+          },
+        });
+
+        const data = response.data.data;
+        console.log(response.data.data);
+
+        setPhMin(data.ph_min);
+        setPhMax(data.ph_max);
+        setTemperaturMin(data.temperatur_min);
+        setTemperaturMax(data.temperatur_max);
+        setTdsMin(data.tds_min);
+        setTdsMax(data.tds_max);
+        setIntensitasCahayaMin(data.intensitas_cahaya_min);
+        setIntensitasCahayaMax(data.intensitas_cahaya_max);
+        setKelembapanMin(data.kelembapan_min);
+        setKelembapanMax(data.kelembapan_max);
+      } catch (error) {
+        console.error(error);
+
+        if (error.response?.status != 401) {
+          toast({
+            title: "Error",
+            description: error.response?.data?.detail || "Server error",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
+        }
+      }
+    };
+
+    fetchData();
+  }, [
+    setPhMin,
+    setPhMax,
+    setTemperaturMin,
+    setTemperaturMax,
+    setTdsMin,
+    setTdsMax,
+    setIntensitasCahayaMin,
+    setIntensitasCahayaMax,
+    setKelembapanMin,
+    setKelembapanMax,
+    kebunId,
+    token,
+    toast,
+  ]);
+
+  const simpanNotifikasi = async () => {
+    let dataNotifikasi = {
       ph_min: +phMin,
       ph_max: +phMax,
       temperatur_min: +temperaturMin,
@@ -73,7 +132,41 @@ export default function Notifikasi() {
       kelembapan_max: +kelembapanMax,
     };
 
-    console.log(data);
+    try {
+      const response = await api.put(
+        `/api/kebun/${kebunId}/notifikasi`,
+        dataNotifikasi,
+        {
+          headers: {
+            Authorization: `Bearer ${token.access}`,
+          },
+        }
+      );
+
+      const data = response.data.data;
+
+      toast({
+        title: "Berhasil",
+        description: "Data berhasil diperbarui",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+
+      if (error.response?.status != 401) {
+        toast({
+          title: "Error",
+          description: error.response?.data?.detail || "Server error",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      }
+    }
   };
 
   return (

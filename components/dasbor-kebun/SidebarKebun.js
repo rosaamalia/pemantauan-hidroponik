@@ -171,19 +171,19 @@ function MobileNav({ kebun, menu, onOpen, ...rest }) {
   const routeName = usePathname();
   const [namaHalaman, setNamaHalaman] = useState("");
 
-  const getRouteName = (route) => {
-    const currentMenu = menu.find(
-      (item) => item.route === route || item.children?.route === route
-    );
-
-    if (currentMenu) {
-      setNamaHalaman(currentMenu.name);
-    }
-  };
-
   useEffect(() => {
+    const getRouteName = (route) => {
+      const currentMenu = menu.find(
+        (item) => item.route === route || item.children?.route === route
+      );
+
+      if (currentMenu) {
+        setNamaHalaman(currentMenu.name);
+      }
+    };
+
     getRouteName(routeName);
-  }, [routeName]);
+  }, [routeName, menu]);
 
   return (
     <Flex

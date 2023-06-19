@@ -17,38 +17,15 @@ import { KebunCard } from "@components/dasbor-akun/KebunCard";
 import ModalKebunDisematkan from "@components/dasbor-akun/ModalKebunDisematkan";
 import { KosongCard } from "@components/dasbor-akun/KosongCard";
 import AkunContext from "@context/akunContext";
-import SemuaKebunContext from "@context/semuaKebunContext";
 import { api } from "@utils/api";
-
-// export async function getServerSideProps() {
-//   const token = JSON.parse(localStorage.getItem("token"));
-
-//   try {
-//     const response = await api.get(`/api/kebun-disematkan/`, {
-//       headers: {
-//         Authorization: `Bearer ${token.access}`,
-//       },
-//     });
-//     const data = response.data.data.kebun;
-//   } catch (error) {
-//     console.error(error);
-//   }
-
-//   return {
-//     props: {
-//       data,
-//     },
-//   };
-// }
 
 export default function Beranda() {
   const router = useRouter();
-  const { semuaKebunData } = useContext(SemuaKebunContext);
   const { akunData } = useContext(AkunContext);
 
   const [token, setToken] = useState(JSON.parse(localStorage.getItem("token")));
-  const [kebun, setKebun] = useState(akunData.data.jumlah_kebun);
-  const [semuaKebun, setSemuaKebun] = useState(semuaKebunData);
+  const [kebun, setKebun] = useState(0);
+  const [semuaKebun, setSemuaKebun] = useState([]);
   const [kebunDisematkan, setKebunDisematkan] = useState([]);
 
   useEffect(() => {
@@ -68,6 +45,29 @@ export default function Beranda() {
 
     fetchData();
   }, [token]);
+
+  useEffect(() => {
+    if (akunData) {
+      setKebun(akunData.data.jumlah_kebun);
+    }
+  }, [akunData, setKebun]);
+
+  useEffect(() => {
+    async function semuaKebun() {
+      try {
+        const response = await api.get("/api/kebun/", {
+          headers: {
+            Authorization: `Bearer ${token.access}`,
+          },
+        });
+        setSemuaKebun(response.data.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    semuaKebun();
+  }, [setSemuaKebun, token]);
 
   const ubahSematan = async (sematan) => {
     console.log(sematan);
@@ -126,7 +126,7 @@ export default function Beranda() {
               size={"sm"}
               rightIcon={<ArrowForwardIcon />}
               onClick={() => {
-                router.push("/semua-kebun");
+                router.push("/kebun");
               }}
             >
               Lihat Semua Kebun

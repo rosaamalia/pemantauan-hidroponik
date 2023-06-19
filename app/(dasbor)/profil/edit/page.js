@@ -1,11 +1,9 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import {
-  Box,
-  Flex,
+  Avatar,
   Stack,
-  HStack,
   Text,
   Image,
   Button,
@@ -16,22 +14,23 @@ import {
   InputGroup,
   InputLeftAddon,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
+import AkunContext from "@context/akunContext";
+import { api } from "@utils/api";
 
 export default function EditProfil() {
   const router = useRouter();
-  const [akun, setAkun] = useState({
-    nama: "Kim Jiwoo 김지우",
-    username: "kimjiwoo",
-    foto_profil:
-      "https://i.pinimg.com/564x/6b/0a/ff/6b0aff7fd2d02a6394026c0551ad4226.jpg",
-    nomor_whatsapp: "62000000000",
-    jumlah_kebun: 10,
-  });
-  const [nama, setNama] = useState(akun.nama);
-  const [username, setUsername] = useState(akun.username);
-  const [nomorWhatsapp, setNomorWhatsapp] = useState(akun.nomor_whatsapp);
+  const toast = useToast();
+  const { akunData, updateAkunData } = useContext(AkunContext);
+  const [token, setToken] = useState(JSON.parse(localStorage.getItem("token")));
+
+  const [nama, setNama] = useState(akunData.data.nama_pengguna);
+  const [username, setUsername] = useState(akunData.data.username);
+  const [nomorWhatsapp, setNomorWhatsapp] = useState(
+    akunData.data.nomor_whatsapp
+  );
   const [fotoProfil, setFotoProfil] = useState("");
   const fileInputRef = useRef("");
 
@@ -45,14 +44,43 @@ export default function EditProfil() {
     fileInputRef.current.click();
   };
 
-  const editProfil = () => {
-    let data = {
-      nama: nama,
+  const editProfil = async () => {
+    let dataProfil = {
+      nama_pengguna: nama,
       username: username,
-      foto_profil: fotoProfil,
     };
 
-    console.log(data);
+    try {
+      const response = await api.put(`/api/akun`, dataProfil, {
+        headers: {
+          Authorization: `Bearer ${token.access}`,
+        },
+      });
+
+      const data = response.data.data;
+
+      toast({
+        title: "Berhasil",
+        description: "Data berhasil diperbarui",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+
+      if (error.response?.status != 401) {
+        toast({
+          title: "Error",
+          description: error.response?.data?.detail || "Server error",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      }
+    }
   };
 
   return (
@@ -64,12 +92,12 @@ export default function EditProfil() {
         wrap={"wrap"}
         mb={6}
       >
-        <Image
-          src={akun.foto_profil}
-          width={32}
-          height={32}
-          objectFit={"cover"}
+        <Avatar
+          name={akunData.data.nama_pengguna}
+          w={32}
+          h={32}
           borderRadius={"lg"}
+          src={akunData.data.foto_profil}
           alt="Foto profil"
         />
         <VStack spacing={2} alignItems={"flex-start"}>
