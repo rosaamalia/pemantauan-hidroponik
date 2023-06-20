@@ -86,6 +86,12 @@ function SidebarContent({ akun, onClose, ...rest }) {
   const routeName = usePathname();
   const router = useRouter();
 
+  const logOut = () => {
+    localStorage.removeItem("token");
+
+    router.push("/");
+  };
+
   return (
     <Box
       transition="3s ease"
@@ -201,6 +207,7 @@ function SidebarContent({ akun, onClose, ...rest }) {
           colorScheme="gray"
           rightIcon={<IoLogOut />}
           size={"sm"}
+          onClick={logOut}
         >
           Keluar
         </Button>

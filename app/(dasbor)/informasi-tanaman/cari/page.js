@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Flex,
   Stack,
@@ -14,13 +15,13 @@ import { SearchIcon } from "@chakra-ui/icons";
 import { TanamanCard } from "@components/dasbor-akun/TanamanCard";
 import Paginasi from "@components/dasbor-akun/Paginasi";
 import { api } from "@utils/api";
-import { useRouter } from "next/navigation";
 
 export default function SemuaTanaman() {
   const router = useRouter();
-  const [query, setQuery] = useState("");
+  const searchParams = useSearchParams();
 
   const [jenisTanaman, setJenisTanaman] = useState([]);
+  const [query, setQuery] = useState(searchParams.get("query"));
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(4);
@@ -32,7 +33,9 @@ export default function SemuaTanaman() {
   useEffect(() => {
     const fetchData = async (page) => {
       try {
-        const response = await api.get(`/api/jenis-tanaman/?page=${page}`);
+        const response = await api.get(
+          `/api/jenis-tanaman/cari?q=${query}&page=${page}`
+        );
         const data = response.data.results;
         setJenisTanaman(data);
         setTotalItems(response.data.count);
@@ -42,7 +45,7 @@ export default function SemuaTanaman() {
     };
 
     fetchData(currentPage);
-  }, [currentPage]);
+  }, [currentPage, query]);
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -52,7 +55,11 @@ export default function SemuaTanaman() {
 
   const sendData = () => {
     console.log("Data yang dikirim:", query);
-    router.push(`/informasi-tanaman/cari?query=${query}`);
+    if (query == "") {
+      router.push("/informasi-tanaman");
+    } else {
+      router.push(`/informasi-tanaman/cari?query=${query}`);
+    }
   };
 
   return (

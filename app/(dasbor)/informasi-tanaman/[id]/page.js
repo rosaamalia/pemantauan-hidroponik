@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,13 +10,45 @@ import {
   Image,
   Stack,
   Text,
+  useToast,
 } from "@chakra-ui/react";
-import { jenis_tanaman } from "@utils/data";
+import { useRouter } from "next/navigation";
+import { api } from "@utils/api";
 
 export default function Tanaman({ params }) {
-  const [tanaman, setTanaman] = useState(
-    jenis_tanaman.find((tanaman) => tanaman.id === +params.id)
-  );
+  const router = useRouter();
+  const toast = useToast();
+  const [kebunId, setKebunId] = useState(+params.id);
+  const [tanaman, setTanaman] = useState({});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`/api/jenis-tanaman/${kebunId}`, {});
+
+        console.log(response.data.data);
+
+        setTanaman(response.data.data);
+      } catch (error) {
+        console.error(error);
+
+        if (error.response?.status === 401) {
+          toast({
+            title: "Session berakhir",
+            description: "Anda harus melakukan login ulang.",
+            status: "info",
+            duration: 9000,
+            isClosable: true,
+          });
+
+          router.push("/masuk");
+        }
+      }
+    };
+
+    fetchData();
+  }, [kebunId, tanaman]);
+
   return (
     <section>
       <Stack width={{ base: "100%", md: "70%" }} spacing={6}>

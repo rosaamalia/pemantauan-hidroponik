@@ -1,34 +1,82 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import {
-  Box,
   Flex,
   Stack,
-  HStack,
   Text,
-  Image,
   Button,
   FormControl,
   FormLabel,
   FormHelperText,
+  FormErrorMessage,
   Input,
   InputGroup,
   InputLeftAddon,
-  VStack,
-  Link
+  Link,
+  useToast,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
+import { api } from "@utils/api";
+import AkunContext from "@context/akunContext";
 
 export default function EditNomorWhatsApp() {
   const router = useRouter();
+  const toast = useToast();
+  const { akunData, updateAkunData } = useContext(AkunContext);
+  const [token, setToken] = useState(JSON.parse(localStorage.getItem("token")));
 
   const [nomorWhatsapp, setNomorWhatsapp] = useState("");
-  const kirimKode = () => {
-    let data = {
+  const [errorNomorWhatsApp, setErrorNomorWhatsApp] = useState("");
+  const [berhasilKirim, setBerhasilKirim] = useState(false);
+  const [errorKodeVerfifikasi, setErrorKodeVerifikasi] = useState("");
+  const [berhasilVerifikasi, setBerhasilVerifikasi] = useState(false);
+
+  const kirimKode = async () => {
+    let dataNomor = {
       nomor_whatsapp: "62" + nomorWhatsapp,
     };
-    console.log("Kirim kode ke nomor", data);
+
+    try {
+      const response = await api.post(
+        `/api/verifikasi/kirim-kode/update-nomor-whatsapp`,
+        dataNomor,
+        {
+          headers: {
+            Authorization: `Bearer ${token.access}`,
+          },
+        }
+      );
+
+      const data = response.data;
+      setBerhasilKirim(true);
+
+      toast({
+        title: "Berhasil",
+        description: data.message,
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+
+      if (error.response?.status == 400) {
+        setErrorNomorWhatsApp(error.response.data.detail);
+      }
+
+      if (error.response?.status != 401 && error.response?.status != 400) {
+        toast({
+          title: "Error",
+          description: error.response?.data?.detail || "Server error",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      }
+    }
   };
 
   const [verificationCode, setVerificationCode] = useState([
@@ -41,6 +89,8 @@ export default function EditNomorWhatsApp() {
   const codeInputs = useRef([]);
 
   const handleInputChange = (e, index) => {
+    setErrorKodeVerifikasi("");
+
     const value = e.target.value;
     if (/^\d*$/.test(value) && value.length <= 1) {
       setVerificationCode((prevCode) => {
@@ -84,20 +134,70 @@ export default function EditNomorWhatsApp() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const code = verificationCode.join("");
-    console.log("Kode verifikasi:", code);
+
+    let dataKode = {
+      kode: code,
+    };
+
+    try {
+      const response = await api.post(
+        `/api/verifikasi/verifikasi-kode-nomor-whatsapp`,
+        dataKode,
+        {
+          headers: {
+            Authorization: `Bearer ${token.access}`,
+          },
+        }
+      );
+
+      const data = response.data;
+
+      const updatedContextValue = { ...akunData };
+      updatedContextValue.data.nomor_whatsapp = "62" + nomorWhatsapp;
+      updateAkunData(updatedContextValue);
+
+      toast({
+        title: "Berhasil",
+        description: data.message,
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+
+      setBerhasilVerifikasi(true);
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+
+      if (error.response?.status == 400) {
+        setErrorKodeVerifikasi(error.response.data.detail);
+      }
+
+      if (error.response?.status != 401 && error.response?.status != 400) {
+        toast({
+          title: "Error",
+          description: error.response?.data?.detail || "Server error",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      }
+    }
   };
 
   const kirimUlang = () => {
     console.log("Kirim ulang");
+
+    kirimKode();
   };
 
   return (
     <section>
       <Stack width={{ base: "100%", md: "49%" }} spacing={6}>
-        <FormControl>
+        <FormControl isInvalid={errorNomorWhatsApp}>
           <FormLabel>Nomor WhatsApp</FormLabel>
           <FormHelperText color={"gray.400"} fontSize={"xs"}>
             Pastikan nomor WhatsApp aktif.
@@ -107,9 +207,15 @@ export default function EditNomorWhatsApp() {
             <Input
               type="tel"
               placeholder="0000000000"
-              onChange={(e) => setNomorWhatsapp(e.target.value)}
+              onChange={(e) => {
+                setErrorNomorWhatsApp("");
+                setNomorWhatsapp(e.target.value);
+              }}
             />
           </InputGroup>
+          {errorNomorWhatsApp && (
+            <FormErrorMessage>{errorNomorWhatsApp}</FormErrorMessage>
+          )}
         </FormControl>
         <Button colorScheme="green" width={"fit-content"} onClick={kirimKode}>
           Kirim Kode Verifikasi
@@ -117,12 +223,19 @@ export default function EditNomorWhatsApp() {
 
         <form onSubmit={handleSubmit}>
           <Stack direction={"column"} spacing={4} width={"100%"}>
-            <FormControl>
+            <FormControl isInvalid={errorKodeVerfifikasi}>
               <FormLabel>Kode Verifikasi</FormLabel>
-              <FormHelperText color={"gray.400"} fontSize={"xs"}>
+              {berhasilKirim && (
+                <FormHelperText color={"gray.400"} fontSize={"xs"}>
                   Kami mengirimkan kode ke nomor WhatsApp +62 {nomorWhatsapp}
-              </FormHelperText>
-              <Stack direction={"row"} spacing={2} mt={2} justifyContent={"center"}>
+                </FormHelperText>
+              )}
+              <Stack
+                direction={"row"}
+                spacing={2}
+                mt={2}
+                justifyContent={"center"}
+              >
                 {verificationCode.map((value, index) => (
                   <Input
                     htmlSize={3}
@@ -138,28 +251,60 @@ export default function EditNomorWhatsApp() {
                   />
                 ))}
               </Stack>
+              {errorKodeVerfifikasi && (
+                <FormErrorMessage>{errorKodeVerfifikasi}</FormErrorMessage>
+              )}
+            </FormControl>
+
+            {berhasilVerifikasi ? (
+              <Flex
+                direction={"row"}
+                bg={"green.50"}
+                borderRadius={"lg"}
+                p={2}
+                alignItems={"center"}
+              >
+                <Text fontSize={"xl"}>✅</Text>
+                <Text color={"green.800"} fontSize={"sm"} ml={2}>
+                  Nomor WhatsApp berhasil diubah.
+                </Text>
+              </Flex>
+            ) : (
               <Text mt={2}>
                 Belum mendapatkan kode?{" "}
                 <Link color={"green.500"} onClick={kirimUlang}>
                   Klik untuk kirim ulang
                 </Link>
               </Text>
-            </FormControl>
+            )}
             <Flex wrap={"wrap"} justifyContent={"space-between"}>
               {verificationCode.includes("") ? (
-                <Button colorScheme="green" width={{base: "100%", md: "49%"}} isDisabled>
+                <Button
+                  colorScheme="green"
+                  width={{ base: "100%", md: "49%" }}
+                  isDisabled
+                >
                   Verifikasi
                 </Button>
               ) : (
-                <Button colorScheme="green" width={{base: "100%", md: "49%"}} type="submit">
+                <Button
+                  colorScheme="green"
+                  width={{ base: "100%", md: "49%" }}
+                  type="submit"
+                >
                   Verifikasi
                 </Button>
               )}
-              <Button colorScheme="green" width={{base: "100%", md: "49%"}} mt={{base: "2", md: "0"}} variant={"outline"} onClick={() => router.push("/profil/edit")}>
+              <Button
+                colorScheme="green"
+                width={{ base: "100%", md: "49%" }}
+                mt={{ base: "2", md: "0" }}
+                variant={"outline"}
+                onClick={() => router.push("/profil/edit")}
+              >
                 Kembali
               </Button>
             </Flex>
-
           </Stack>
         </form>
       </Stack>

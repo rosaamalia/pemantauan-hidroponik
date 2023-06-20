@@ -37,7 +37,7 @@ export default function EditProfil() {
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
     setFotoProfil(file);
-    console.log(file.name);
+    console.log(file, file.name);
   };
 
   const handleButtonProfile = () => {
@@ -45,14 +45,17 @@ export default function EditProfil() {
   };
 
   const editProfil = async () => {
-    let dataProfil = {
-      nama_pengguna: nama,
-      username: username,
-    };
+    let formData = new FormData();
+    formData.append("nama_pengguna", nama);
+    formData.append("username", username);
+    if (fotoProfil != "") {
+      formData.append("foto_profil", fotoProfil);
+    }
 
     try {
-      const response = await api.put(`/api/akun`, dataProfil, {
+      const response = await api.put(`/api/akun`, formData, {
         headers: {
+          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token.access}`,
         },
       });
@@ -66,6 +69,11 @@ export default function EditProfil() {
         duration: 9000,
         isClosable: true,
       });
+
+      // Mengupdate key 'data' dalam context
+      const updatedContext = { ...AkunContext, data: data };
+      // Lakukan pembaruan pada state context
+      updateAkunData(updatedContext);
 
       console.log(data);
     } catch (error) {
@@ -97,7 +105,11 @@ export default function EditProfil() {
           w={32}
           h={32}
           borderRadius={"lg"}
-          src={akunData.data.foto_profil}
+          src={
+            fotoProfil == ""
+              ? akunData.data.foto_profil
+              : URL.createObjectURL(fotoProfil)
+          }
           alt="Foto profil"
         />
         <VStack spacing={2} alignItems={"flex-start"}>

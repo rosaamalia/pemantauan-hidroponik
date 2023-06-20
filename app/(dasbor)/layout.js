@@ -6,7 +6,6 @@ import { useToast } from "@chakra-ui/react";
 import Loader from "@components/Loader";
 import { SidebarAkun } from "@components/dasbor-akun/SidebarAkun";
 import AkunContext from "@context/akunContext";
-import { SemuaKebunProvider } from "@context/semuaKebunContext";
 import { api } from "@utils/api";
 
 export default function DasborLayout({ children }) {
@@ -26,6 +25,8 @@ export default function DasborLayout({ children }) {
           },
         });
 
+        console.log(response.data.data);
+
         setAkun(response.data.data);
         updateAkunData(response.data);
       } catch (error) {
@@ -42,7 +43,7 @@ export default function DasborLayout({ children }) {
     };
 
     fetchData();
-  }, [updateAkunData, akunData, router, toast]);
+  }, [updateAkunData]);
 
   useEffect(() => {
     if (akunData) {
@@ -52,13 +53,11 @@ export default function DasborLayout({ children }) {
 
   return (
     <main>
-      <SemuaKebunProvider>
-        {akun != null ? (
-          <SidebarAkun akun={akun}>{children}</SidebarAkun>
-        ) : (
-          <Loader />
-        )}
-      </SemuaKebunProvider>
+      {akun != null ? (
+        <SidebarAkun akun={akun}>{children}</SidebarAkun>
+      ) : (
+        <Loader />
+      )}
     </main>
   );
 }

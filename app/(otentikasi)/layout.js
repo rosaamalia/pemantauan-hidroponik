@@ -3,8 +3,18 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Flex, Stack, Box, Text } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function OtentikasiLayout({ children }) {
+  const router = useRouter();
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem("token"));
+
+    if (token) {
+      router.push("/beranda");
+    }
+  }, []);
   return (
     <main>
       <Flex height={"100vh"} direction={"row"}>
