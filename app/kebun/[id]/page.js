@@ -12,6 +12,7 @@ import {
   ListItem,
 } from "@chakra-ui/react";
 import { w3cwebsocket as W3CWebSocket } from "websocket";
+import MonitorSkeleton from "@components/dasbor-kebun/MonitorSkeleton";
 import { rekomendasi } from "@utils/data";
 import KebunContext from "@context/kebunContext";
 
@@ -19,11 +20,13 @@ export default function Dasbor({ params }) {
   const { kebunData } = useContext(KebunContext);
   const [data, setData] = useState({});
   const [tindakan, setTindakan] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setIsLoading(true);
     const realTimeData = () => {
       const client = new W3CWebSocket(
-        `ws://192.168.1.15:8000/kebun/${kebunData.id}/data/terbaru`
+        `ws://192.168.1.9:8000/kebun/${kebunData.id}/data/terbaru`
       );
 
       client.onopen = () => {
@@ -46,6 +49,8 @@ export default function Dasbor({ params }) {
               item.hasil_rekomendasi === +received.message.hasil_rekomendasi
           )?.tindakan
         );
+
+        setIsLoading(false);
       };
 
       return () => {
@@ -64,43 +69,9 @@ export default function Dasbor({ params }) {
 
   return (
     <section>
-      {Object.keys(data).length === 0 || data.id_kebun == null ? (
-        <Flex
-          direction={"column"}
-          alignItems={"center"}
-          justifyContent={"center"}
-          height={"70vh"}
-        >
-          <OrderedList>
-            <ListItem>
-              Pada file Arduino.ino, temukan variabel id pada line 86
-            </ListItem>
-            <ListItem>
-              Salin id {params.id}, kemudian tempel pada variabel id di langkah
-              1
-            </ListItem>
-            <Code
-              colorScheme="green"
-              children={`/* Tempel id ke variabel berikut */`}
-              width={"100%"}
-            />
-            <Code
-              colorScheme="green"
-              children={`let id = ${params.id}`}
-              width={"100%"}
-            />
-            <ListItem>Klik tombol di bawah untuk menghubungkan sistem</ListItem>
-          </OrderedList>
-          <Button
-            colorScheme="green"
-            width={"fit-content"}
-            mt={2}
-            onClick={ambilData}
-          >
-            Hubungkan Sistem
-          </Button>
-        </Flex>
-      ) : (
+      {isLoading ? (
+        <MonitorSkeleton />
+      ) : data.id_kebun != null ? (
         <Flex justifyContent={"space-between"} wrap={"wrap"} mb={4}>
           <Stack
             direction={"column"}
@@ -308,6 +279,42 @@ export default function Dasbor({ params }) {
               </Text>
             </Stack>
           </Stack>
+        </Flex>
+      ) : (
+        <Flex
+          direction={"column"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          height={"70vh"}
+        >
+          <OrderedList>
+            <ListItem>
+              Pada file Arduino.ino, temukan variabel id pada line 86
+            </ListItem>
+            <ListItem>
+              Salin id {params.id}, kemudian tempel pada variabel id di langkah
+              1
+            </ListItem>
+            <Code
+              colorScheme="green"
+              children={`/* Tempel id ke variabel berikut */`}
+              width={"100%"}
+            />
+            <Code
+              colorScheme="green"
+              children={`let id = ${params.id}`}
+              width={"100%"}
+            />
+            <ListItem>Klik tombol di bawah untuk menghubungkan sistem</ListItem>
+          </OrderedList>
+          <Button
+            colorScheme="green"
+            width={"fit-content"}
+            mt={2}
+            onClick={() => ambilData}
+          >
+            Hubungkan Sistem
+          </Button>
         </Flex>
       )}
     </section>

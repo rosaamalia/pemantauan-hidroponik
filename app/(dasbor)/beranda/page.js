@@ -16,6 +16,7 @@ import { AiFillPushpin } from "react-icons/ai";
 import { KebunCard } from "@components/dasbor-akun/KebunCard";
 import ModalKebunDisematkan from "@components/dasbor-akun/ModalKebunDisematkan";
 import { KosongCard } from "@components/dasbor-akun/KosongCard";
+import CardSkeleton from "@components/dasbor-akun/CardSkeleton";
 import AkunContext from "@context/akunContext";
 import { api } from "@utils/api";
 
@@ -23,12 +24,14 @@ export default function Beranda() {
   const router = useRouter();
   const { akunData } = useContext(AkunContext);
 
+  const [isLoading, setIsLoading] = useState(true);
   const [token, setToken] = useState(JSON.parse(localStorage.getItem("token")));
   const [kebun, setKebun] = useState(0);
   const [semuaKebun, setSemuaKebun] = useState([]);
   const [kebunDisematkan, setKebunDisematkan] = useState([]);
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchData = async () => {
       try {
         const response = await api.get(`/api/kebun-disematkan/`, {
@@ -38,6 +41,8 @@ export default function Beranda() {
         });
         const data = response.data.data.kebun;
         setKebunDisematkan(data);
+
+        setIsLoading(false);
       } catch (error) {
         console.error(error);
       }
@@ -53,6 +58,7 @@ export default function Beranda() {
   }, [akunData, setKebun]);
 
   useEffect(() => {
+    setIsLoading(true);
     async function semuaKebun() {
       try {
         const response = await api.get("/api/kebun/", {
@@ -61,6 +67,8 @@ export default function Beranda() {
           },
         });
         setSemuaKebun(response.data.data);
+
+        setIsLoading(false);
       } catch (error) {
         console.error(error);
       }
@@ -149,7 +157,22 @@ export default function Beranda() {
         )}
       </Flex>
 
-      {kebunDisematkan.length == 0 ? (
+      {isLoading ? (
+        <CardSkeleton my={4} />
+      ) : kebunDisematkan.length != 0 ? (
+        <Flex my={4} wrap={"wrap"} justifyContent={"space-between"}>
+          {semuaKebun &&
+            semuaKebun
+              .filter((kebun) => kebunDisematkan.includes(kebun.id))
+              .map((kebun) => (
+                <KebunCard
+                  width={{ base: "100%", md: "49%" }}
+                  key={kebun.id}
+                  kebun={kebun}
+                ></KebunCard>
+              ))}
+        </Flex>
+      ) : (
         <KosongCard
           pathGambar={"/images/dasbor-kebun/daffodils-kuning.jpg"}
           heading={"Tidak ada kebun yang disematkan!"}
@@ -162,22 +185,7 @@ export default function Beranda() {
           width={{ base: "100%", md: "49%" }}
           mt={4}
         />
-      ) : (
-        <></>
       )}
-
-      <Flex my={4} wrap={"wrap"} justifyContent={"space-between"}>
-        {semuaKebun &&
-          semuaKebun
-            .filter((kebun) => kebunDisematkan.includes(kebun.id))
-            .map((kebun) => (
-              <KebunCard
-                width={{ base: "100%", md: "49%" }}
-                key={kebun.id}
-                kebun={kebun}
-              ></KebunCard>
-            ))}
-      </Flex>
 
       {kebunDisematkan.length != 0 && semuaKebun && (
         <ModalKebunDisematkan

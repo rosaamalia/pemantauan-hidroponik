@@ -9,7 +9,6 @@ import {
   InputGroup,
   InputRightElement,
   IconButton,
-  useDisclosure,
   Text,
   Skeleton,
 } from "@chakra-ui/react";
@@ -18,22 +17,24 @@ import { IoAddCircle } from "react-icons/io5";
 import { KebunCard } from "@components/dasbor-akun/KebunCard";
 import { KosongCard } from "@components/dasbor-akun/KosongCard";
 import Paginasi from "@components/dasbor-akun/Paginasi";
+import CardSkeleton from "@components/dasbor-akun/CardSkeleton";
 import { api } from "@utils/api";
 
 export default function SemuaKebun() {
   const router = useRouter();
 
+  const [isLoading, setIsLoading] = useState(true);
   const [semuaKebun, setSemuaKebun] = useState([]);
   const [query, setQuery] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(4);
+  const [totalItems, setTotalItems] = useState(0);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const [totalItems, setTotalItems] = useState(0);
-
   useEffect(() => {
+    setIsLoading(true);
     const token = JSON.parse(localStorage.getItem("token"));
 
     const fetchData = async (page) => {
@@ -46,6 +47,8 @@ export default function SemuaKebun() {
         const data = response.data.results;
         setSemuaKebun(data);
         setTotalItems(response.data.count);
+
+        setIsLoading(false);
       } catch (error) {
         console.error(error);
       }
@@ -93,35 +96,29 @@ export default function SemuaKebun() {
           </InputRightElement>
         </InputGroup>
 
-        <Flex wrap={"wrap"} justifyContent={"space-between"} width={"100%"}>
-          <Suspense
-            fallback={
-              <Stack spacing={2}>
-                <Skeleton height={40} />
-              </Stack>
-            }
-          >
-            {semuaKebun.length == 0 ? (
-              <KosongCard
-                pathGambar={"/images/dasbor-kebun/bunga-matahari.png"}
-                heading={"Belum ada kebun!"}
-                deskripsi={"Tambah kebun untuk memulai monitor."}
-                teksTombol={"Tambah Kebun"}
-                ikon={<IoAddCircle />}
-                onClick={() => router.push("/tambah-kebun")}
+        {isLoading ? (
+          <CardSkeleton />
+        ) : semuaKebun.length != 0 ? (
+          <Flex wrap={"wrap"} justifyContent={"space-between"} width={"100%"}>
+            {semuaKebun.map((kebun) => (
+              <KebunCard
                 width={{ base: "100%", md: "49%" }}
-              />
-            ) : (
-              semuaKebun.map((kebun) => (
-                <KebunCard
-                  width={{ base: "100%", md: "49%" }}
-                  key={kebun.id}
-                  kebun={kebun}
-                ></KebunCard>
-              ))
-            )}
-          </Suspense>
-        </Flex>
+                key={kebun.id}
+                kebun={kebun}
+              ></KebunCard>
+            ))}
+          </Flex>
+        ) : (
+          <KosongCard
+            pathGambar={"/images/dasbor-kebun/bunga-matahari.png"}
+            heading={"Belum ada kebun!"}
+            deskripsi={"Tambah kebun untuk memulai monitor."}
+            teksTombol={"Tambah Kebun"}
+            ikon={<IoAddCircle />}
+            onClick={() => router.push("/tambah-kebun")}
+            width={{ base: "100%", md: "49%" }}
+          />
+        )}
 
         {semuaKebun.length != 0 ? (
           <Paginasi

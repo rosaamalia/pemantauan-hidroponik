@@ -13,29 +13,33 @@ import {
 import { SearchIcon } from "@chakra-ui/icons";
 import { TanamanCard } from "@components/dasbor-akun/TanamanCard";
 import Paginasi from "@components/dasbor-akun/Paginasi";
+import CardSkeleton from "@components/dasbor-akun/CardSkeleton";
 import { api } from "@utils/api";
 import { useRouter } from "next/navigation";
 
 export default function SemuaTanaman() {
   const router = useRouter();
-  const [query, setQuery] = useState("");
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [query, setQuery] = useState("");
   const [jenisTanaman, setJenisTanaman] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(4);
+  const [totalItems, setTotalItems] = useState(0);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const [totalItems, setTotalItems] = useState(0);
-
   useEffect(() => {
+    setIsLoading(true);
     const fetchData = async (page) => {
       try {
         const response = await api.get(`/api/jenis-tanaman/?page=${page}`);
         const data = response.data.results;
         setJenisTanaman(data);
         setTotalItems(response.data.count);
+
+        setIsLoading(false);
       } catch (error) {
         console.error(error);
       }
@@ -83,15 +87,19 @@ export default function SemuaTanaman() {
           </InputRightElement>
         </InputGroup>
 
-        <Flex wrap={"wrap"} justifyContent={"space-between"} width={"100%"}>
-          {jenisTanaman.map((tanaman) => (
-            <TanamanCard
-              width={{ base: "100%", md: "49%" }}
-              key={tanaman.id}
-              jenisTanaman={tanaman}
-            />
-          ))}
-        </Flex>
+        {isLoading ? (
+          <CardSkeleton />
+        ) : (
+          <Flex wrap={"wrap"} justifyContent={"space-between"} width={"100%"}>
+            {jenisTanaman.map((tanaman) => (
+              <TanamanCard
+                width={{ base: "100%", md: "49%" }}
+                key={tanaman.id}
+                jenisTanaman={tanaman}
+              />
+            ))}
+          </Flex>
+        )}
 
         {jenisTanaman.length != 0 ? (
           <Paginasi

@@ -24,20 +24,18 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { IoMap } from "react-icons/io5";
-import JenisTanamanContext from "@context/jenisTanamanContext";
+import AkunContext from "@context/akunContext";
 import { api } from "@utils/api";
 
 export default function TambahKebun() {
   const toast = useToast();
-  const router = useRouter();
-  const { jenisTanamanData } = useContext(JenisTanamanContext);
+  const { akunData, updateAkunData } = useContext(AkunContext);
 
+  const [tanaman, setTanaman] = useState(null);
   const [namaKebun, setNamaKebun] = useState("");
   const [deskripsi, setDeskripsi] = useState("");
   const [alamat, setAlamat] = useState("");
-  const [jenisTanaman, setJenisTanaman] = useState(
-    jenisTanamanData ? String(jenisTanamanData[0].id) : "1"
-  );
+  const [jenisTanaman, setJenisTanaman] = useState("1");
   const [error, setError] = useState("");
 
   const [currentLocation, setCurrentLocation] = useState({
@@ -74,6 +72,21 @@ export default function TambahKebun() {
     }
   }, [latitude, longitude]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`/api/jenis-tanaman/`);
+        const data = response.data.data;
+        setTanaman(data);
+        setJenisTanaman(String(data[0].id));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const Peta = dynamic(() => import("@components/dasbor-akun/Peta"), {
     ssr: false,
   });
@@ -107,8 +120,10 @@ export default function TambahKebun() {
         isClosable: true,
       });
 
-      setNamaKebun("");
-      setDeskripsi("");
+      const updatedContextValue = { ...akunData };
+      updatedContextValue.data.jumlah_kebun =
+        updatedContextValue.data.jumlah_kebun + 1;
+      updateAkunData(updatedContextValue);
     } catch (error) {
       console.log(error);
 
@@ -230,14 +245,14 @@ export default function TambahKebun() {
                 mt={2}
               >
                 <Stack direction="column" spacing={2}>
-                  {jenisTanamanData == null ? (
+                  {tanaman == null ? (
                     <>
                       <Skeleton height={12} />
                       <Skeleton height={12} />
                       <Skeleton height={12} />
                     </>
                   ) : (
-                    jenisTanamanData.map((tanaman) => (
+                    tanaman.map((tanaman) => (
                       <Box
                         key={tanaman.id}
                         width={"100%"}

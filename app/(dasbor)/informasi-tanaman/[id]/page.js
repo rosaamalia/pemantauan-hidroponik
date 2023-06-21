@@ -47,7 +47,7 @@ export default function Tanaman({ params }) {
     };
 
     fetchData();
-  }, [kebunId, tanaman]);
+  }, [kebunId]);
 
   return (
     <section>
