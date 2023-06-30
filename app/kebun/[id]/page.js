@@ -26,7 +26,7 @@ export default function Dasbor({ params }) {
     setIsLoading(true);
     const realTimeData = () => {
       const client = new W3CWebSocket(
-        `ws://192.168.1.9:8000/kebun/${kebunData.id}/data/terbaru`
+        `ws://${process.env.API_URL}/kebun/${kebunData.id}/data/terbaru`
       );
 
       client.onopen = () => {

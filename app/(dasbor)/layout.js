@@ -30,6 +30,8 @@ export default function DasborLayout({ children }) {
         setAkun(response.data.data);
         updateAkunData(response.data);
       } catch (error) {
+        console.log(error);
+
         toast({
           title: "Session berakhir",
           description: "Anda harus melakukan login ulang.",

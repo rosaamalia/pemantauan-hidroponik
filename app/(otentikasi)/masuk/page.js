@@ -47,6 +47,7 @@ export default function Masuk() {
       localStorage.setItem("token", JSON.stringify(response.data.token));
       router.push("/beranda");
     } catch (error) {
+      console.log(error);
       if (error.response.data) {
         setError(error.response.data.detail);
       }
