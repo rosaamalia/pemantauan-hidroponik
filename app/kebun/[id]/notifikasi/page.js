@@ -147,7 +147,7 @@ export default function Notifikasi({ params }) {
 
       toast({
         title: "Berhasil",
-        description: "Data berhasil diperbarui",
+        description: response.data.message,
         status: "success",
         duration: 9000,
         isClosable: true,

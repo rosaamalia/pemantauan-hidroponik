@@ -187,7 +187,7 @@ export default function Beranda() {
         />
       )}
 
-      {kebunDisematkan.length != 0 && semuaKebun && (
+      {semuaKebun && (
         <ModalKebunDisematkan
           isOpen={isOpen}
           onClose={onClose}

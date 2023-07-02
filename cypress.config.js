@@ -6,6 +6,10 @@ module.exports = defineConfig({
       // implement node event listeners here
     },
     baseUrl: "http://localhost:3000",
+    video: false,
+    capture: "runner",
+    defaultCommandTimeout: 50000,
   },
-  defaultCommandTimeout: 20000,
+  numTestsKeptInMemory: 0,
+  watchForFileChanges: false,
 });

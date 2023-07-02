@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useContext } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   Flex,
@@ -35,6 +35,12 @@ export default function VerificationForm() {
   ]);
   const [error, setError] = useState("");
   const codeInputs = useRef([]);
+
+  useEffect(() => {
+    if (codeInputs.current[0]) {
+      codeInputs.current[0].focus();
+    }
+  }, []);
 
   const handleInputChange = (e, index) => {
     const value = e.target.value;
