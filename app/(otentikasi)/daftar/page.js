@@ -121,7 +121,7 @@ export default function Daftar() {
           <FormControl isInvalid={error.nomor_whatsapp}>
             <FormLabel>Nomor WhatsApp</FormLabel>
             <InputGroup>
-              <InputLeftAddon children="+62" />
+              <InputLeftAddon>+62</InputLeftAddon>
               <Input
                 type="tel"
                 placeholder="8123456789"

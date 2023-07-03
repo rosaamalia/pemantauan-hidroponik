@@ -203,7 +203,7 @@ export default function EditNomorWhatsApp() {
             Pastikan nomor WhatsApp aktif.
           </FormHelperText>
           <InputGroup mt={2}>
-            <InputLeftAddon children="+62" />
+            <InputLeftAddon>+62</InputLeftAddon>
             <Input
               type="tel"
               placeholder="0000000000"

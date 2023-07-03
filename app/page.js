@@ -76,7 +76,6 @@ const testimoni = [
 
 export default function Home() {
   const router = useRouter();
-
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem("token"));
 

@@ -295,16 +295,12 @@ export default function Dasbor({ params }) {
               Salin id {params.id}, kemudian tempel pada variabel id di langkah
               1
             </ListItem>
-            <Code
-              colorScheme="green"
-              children={`/* Tempel id ke variabel berikut */`}
-              width={"100%"}
-            />
-            <Code
-              colorScheme="green"
-              children={`let id = ${params.id}`}
-              width={"100%"}
-            />
+            <Code colorScheme="green" width={"100%"}>
+              &quot;/* Tempel id ke variabel berikut */&quot;
+            </Code>
+            <Code colorScheme="green" width={"100%"}>
+              let id = {params.id}
+            </Code>
             <ListItem>Klik tombol di bawah untuk menghubungkan sistem</ListItem>
           </OrderedList>
           <Button

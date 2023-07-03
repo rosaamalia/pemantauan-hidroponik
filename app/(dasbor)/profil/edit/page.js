@@ -162,7 +162,7 @@ export default function EditProfil() {
               Nomor WhatsApp harus diverifikasi terlebih dahulu.
             </FormHelperText>
             <InputGroup mt={2}>
-              <InputLeftAddon children="+62" />
+              <InputLeftAddon>+62</InputLeftAddon>
               <Input type="tel" value={nomorWhatsapp.substring(2)} readOnly />
               <Button
                 colorScheme="green"
