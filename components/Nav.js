@@ -139,7 +139,14 @@ export function Nav({ children }) {
           >
             Tutorial Integrasi
           </Link>
-          <Button colorScheme="green" variant="outline" width={"fit-content"}>
+          <Button
+            colorScheme="green"
+            variant="outline"
+            width={"fit-content"}
+            onClick={() => {
+              router.push("/masuk");
+            }}
+          >
             Masuk
           </Button>
           <Button
