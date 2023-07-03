@@ -74,13 +74,13 @@ export default function EditKataSandi() {
 
       toast({
         title: "Berhasil",
-        description: "Kata sandi berhasil diperbarui",
+        description: response.data.message,
         status: "success",
         duration: 9000,
         isClosable: true,
       });
 
-      console.log(response.data);
+      console.log(response);
     } catch (error) {
       console.error(error);
 

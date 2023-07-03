@@ -51,6 +51,7 @@ export default function EditProfil() {
     if (fotoProfil != "") {
       formData.append("foto_profil", fotoProfil);
     }
+    console.log(formData);
 
     try {
       const response = await api.put(`/api/akun`, formData, {
@@ -64,7 +65,7 @@ export default function EditProfil() {
 
       toast({
         title: "Berhasil",
-        description: "Data berhasil diperbarui",
+        description: response.data.message,
         status: "success",
         duration: 9000,
         isClosable: true,
@@ -75,6 +76,7 @@ export default function EditProfil() {
       // Lakukan pembaruan pada state context
       updateAkunData(updatedContext);
 
+      setFotoProfil("");
       console.log(data);
     } catch (error) {
       console.error(error);
