@@ -244,7 +244,7 @@ export default function Dasbor({ params }) {
             <Stack
               direction={"column"}
               p={6}
-              backgroundImage={`url(${kebunData.jenis_tanaman.foto})`}
+              backgroundImage={`url(//images.weserv.nl/?url=${kebunData.jenis_tanaman.foto})`}
               borderRadius={"lg"}
               border={"1px"}
               borderColor={"gray.200"}
