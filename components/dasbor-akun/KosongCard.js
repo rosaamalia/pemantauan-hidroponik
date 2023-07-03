@@ -24,7 +24,7 @@ export function KosongCard({
         <Flex width={"30%"} height={40}>
           <Image
             objectFit="cover"
-            src={"//images.weserv.nl/?url=" + pathGambar}
+            src={pathGambar}
             alt="Ilustrasi dasbor kosong"
           />
         </Flex>
