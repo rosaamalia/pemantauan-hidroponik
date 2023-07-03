@@ -109,7 +109,7 @@ export default function EditProfil() {
           borderRadius={"lg"}
           src={
             fotoProfil == ""
-              ? akunData.data.foto_profil
+              ? "//images.weserv.nl/?url=" + akunData.data.foto_profil
               : URL.createObjectURL(fotoProfil)
           }
           alt="Foto profil"

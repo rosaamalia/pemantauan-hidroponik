@@ -183,7 +183,7 @@ function SidebarContent({ akun, onClose, ...rest }) {
               w={10}
               h={10}
               borderRadius={"md"}
-              src={akun.foto_profil}
+              src={"//images.weserv.nl/?url=" + akun.foto_profil}
               mr={4}
             />
             <Flex direction={"column"} justifyContent={"space-between"}>

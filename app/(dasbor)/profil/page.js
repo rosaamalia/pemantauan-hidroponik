@@ -33,7 +33,7 @@ export default function Profil() {
               w={32}
               h={32}
               borderRadius={"lg"}
-              src={akunData.data.foto_profil}
+              src={"//images.weserv.nl/?url=" + akunData.data.foto_profil}
               alt="Foto profil"
             />
             <Flex

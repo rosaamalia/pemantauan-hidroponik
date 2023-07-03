@@ -279,7 +279,7 @@ export default function TambahKebun() {
                             </Stack>
                             <Flex width={"12"} height={"12"}>
                               <Image
-                                src={tanaman.foto}
+                                src={"//images.weserv.nl/?url=" + tanaman.foto}
                                 objectFit={"cover"}
                                 alt="Gambar jenis tanaman"
                               />

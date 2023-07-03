@@ -67,7 +67,9 @@ export default function Tentang() {
                 </Stack>
                 <Flex width={"16"} height={"16"}>
                   <Image
-                    src={kebunData.jenis_tanaman.foto}
+                    src={
+                      "//images.weserv.nl/?url=" + kebunData.jenis_tanaman.foto
+                    }
                     objectFit={"cover"}
                     alt="Gambar jenis tanaman"
                   />

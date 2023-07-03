@@ -64,7 +64,7 @@ export default function Tanaman({ params }) {
         <Heading as={"h1"}>{tanaman.nama_tanaman}</Heading>
 
         <Image
-          src={tanaman.foto}
+          src={"//images.weserv.nl/?url=" + tanaman.foto}
           width={"100%"}
           height={"30vh"}
           objectFit={"cover"}

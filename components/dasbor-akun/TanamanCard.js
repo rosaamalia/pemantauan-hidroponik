@@ -28,7 +28,7 @@ export function TanamanCard({ jenisTanaman, ...rest }) {
             height={24}
             borderRadius={"lg"}
             objectFit="cover"
-            src={jenisTanaman.foto}
+            src={"//images.weserv.nl/?url=" + jenisTanaman.foto}
             alt={jenisTanaman.nama_tanaman}
           />
 

@@ -46,7 +46,7 @@ export function KebunCard({ kebun, ...rest }) {
           <Flex width={"30%"} height={"100%"}>
             <Image
               objectFit="cover"
-              src={kebun.jenis_tanaman.foto}
+              src={"//images.weserv.nl/?url=" + kebun.jenis_tanaman.foto}
               alt={kebun.jenis_tanaman.nama_tanaman}
             />
           </Flex>

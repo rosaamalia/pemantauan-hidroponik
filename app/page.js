@@ -190,7 +190,7 @@ export default function Home() {
                 mb={4}
               >
                 <Image
-                  src={fitur_el.gambar}
+                  src={"//images.weserv.nl/?url=" + fitur_el.gambar}
                   style={imgFitur}
                   alt="Fitur"
                   fill
