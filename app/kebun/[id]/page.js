@@ -95,7 +95,7 @@ export default function Dasbor({ params }) {
                 mb={{ base: "0", md: "2" }}
               >
                 <Text color={"green.100"}>HASIL REKOMENDASI</Text>
-                <Text color={"white"}>{data.created_at}</Text>
+                <Text color={"white"}>{data.tanggal}</Text>
               </Flex>
 
               {tindakan.length != 0 &&
