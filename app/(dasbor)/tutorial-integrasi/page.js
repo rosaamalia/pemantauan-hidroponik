@@ -17,61 +17,23 @@ export default function TutorialIntegrasi() {
         />
 
         <Text textAlign={"justify"}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Diam in
-          arcu cursus euismod quis viverra nibh cras pulvinar. Consequat ac
-          felis donec et. Est ante in nibh mauris cursus mattis. Egestas sed sed
-          risus pretium quam vulputate dignissim suspendisse in. Viverra vitae
-          congue eu consequat ac felis. Auctor augue mauris augue neque gravida
-          in fermentum et sollicitudin. Morbi tincidunt ornare massa eget.
-          Ornare suspendisse sed nisi lacus sed. Pharetra massa massa ultricies
-          mi quis hendrerit dolor. Sem nulla pharetra diam sit. Pharetra
-          pharetra massa massa ultricies. Elit pellentesque habitant morbi
-          tristique senectus. Nulla facilisi nullam vehicula ipsum a arcu cursus
-          vitae congue.
-          <br />
-          <br />
-          Purus viverra accumsan in nisl nisi scelerisque eu ultrices. Eu
-          ultrices vitae auctor eu augue. Elit ullamcorper dignissim cras
-          tincidunt. Eu sem integer vitae justo eget magna. Quis lectus nulla at
-          volutpat diam ut venenatis tellus. Tincidunt arcu non sodales neque.
-          Amet mattis vulputate enim nulla aliquet porttitor. Amet commodo nulla
-          facilisi nullam vehicula ipsum. Lacus sed viverra tellus in hac
-          habitasse platea dictumst vestibulum. Vitae sapien pellentesque
-          habitant morbi tristique senectus. Viverra nam libero justo laoreet
-          sit. Eros donec ac odio tempor. Mauris sit amet massa vitae tortor
-          condimentum lacinia.
-          <br />
-          <br />
-          Platea dictumst vestibulum rhoncus est pellentesque elit ullamcorper.
-          A diam sollicitudin tempor id eu. Vitae turpis massa sed elementum
-          tempus egestas sed sed risus. Eget nulla facilisi etiam dignissim diam
-          quis enim lobortis scelerisque. Eget nullam non nisi est sit. Faucibus
-          purus in massa tempor. Arcu non sodales neque sodales ut etiam sit. Ac
-          felis donec et odio pellentesque diam. Morbi leo urna molestie at
-          elementum eu. Nulla malesuada pellentesque elit eget gravida cum
-          sociis natoque.
-          <br />
-          <br />
-          Tincidunt tortor aliquam nulla facilisi. Quis auctor elit sed
-          vulputate mi. Etiam dignissim diam quis enim lobortis. Dictumst
-          vestibulum rhoncus est pellentesque elit ullamcorper dignissim. Mi sit
-          amet mauris commodo quis imperdiet massa tincidunt nunc. Nisi lacus
-          sed viverra tellus in hac habitasse platea. Sociis natoque penatibus
-          et magnis. Sagittis nisl rhoncus mattis rhoncus urna. Eu volutpat odio
-          facilisis mauris sit. Mauris vitae ultricies leo integer malesuada.
-          Integer feugiat scelerisque varius morbi enim. Tempor id eu nisl nunc
-          mi ipsum.
-          <br />
-          <br />
-          Massa tincidunt nunc pulvinar sapien et ligula. Tempor orci dapibus
-          ultrices in. Nulla aliquet porttitor lacus luctus accumsan tortor
-          posuere. In dictum non consectetur a erat nam. Scelerisque purus
-          semper eget duis at. Scelerisque varius morbi enim nunc faucibus a
-          pellentesque. In mollis nunc sed id semper risus in. Volutpat blandit
-          aliquam etiam erat velit. Nec dui nunc mattis enim ut tellus elementum
-          sagittis vitae. Adipiscing diam donec adipiscing tristique risus nec
-          feugiat. Sed turpis tincidunt id aliquet risus feugiat.
+          Berikut adalah cara menghubungkan sistem pemantauan hidroponik dengan modul IoT: <br/><br/>
+
+<ol>
+  <li>Siapkan modul IoT yang menggunakan mikrokontroler jenis NodeMCU ESP8266.</li>
+  <li>Unduh program untuk mikrokontroler melalui <a href="unduh_link.com">tautan ini</a> dan install Arduino IDE dari situs resmi Arduino (<a href="https://www.arduino.cc/en/software">arduino.cc/en/software</a>).</li>
+  <li>Install ESP8266 Board Library pada Arduino IDE dengan mengikuti tutorial yang tersedia di <a href="https://randomnerdtutorials.com/how-to-install-esp8266-board-arduino-ide/">randomnerdtutorials.com/how-to-install-esp8266-board-arduino-ide/</a>.</li>
+  <li>Install library DHT ESP dan ArduinoJson di Arduino IDE.</li>
+  <li>Buka file program dan lakukan perubahan pada beberapa baris kode berikut:
+    <ul>
+      <li>Baris 70 dan 71: Definisikan WiFi yang akan digunakan untuk menghubungkan modul IoT dengan jaringan.</li>
+      <li>Baris 146 dan 147: Definisikan kredensial akun sistem Pemantauan Hidroponik yang diperlukan untuk mengirim data ke server.</li>
+      <li>Baris 149: Definisikan ID kebun yang telah didapatkan setelah menambahkan data kebun pada sistem.</li>
+    </ul>
+  </li>
+  <li>Upload kode program ke modul IoT dan tunggu hingga data mulai dikirimkan.</li>
+  <li>Jika terdapat error, pastikan file program sudah disesuaikan dengan langkah-langkah sebelumnya.</li>
+</ol>
         </Text>
       </Stack>
     </section>
