@@ -289,19 +289,28 @@ export default function Dasbor({ params }) {
         >
           <OrderedList>
             <ListItem>
-              Pada file Arduino.ino, temukan variabel id pada line 86
+              Pada file esp_mysql_post.ino, temukan variabel username dan password_akun pada baris 11 dan 12
             </ListItem>
             <ListItem>
-              Salin id {params.id}, kemudian tempel pada variabel id di langkah
-              1
+              Masukkan username dan kata sandi akun sistem ke variabel yang disebutkan pada langkah 1
+            </ListItem>
+            <ListItem>
+              Temukan variabel id_kebun pada baris 14
+            </ListItem>
+            <ListItem>
+              Salin id {params.id}, kemudian tempel pada variabel id_kebun di langkah
+              3
             </ListItem>
             <Code colorScheme="green" width={"100%"}>
-              &quot;/* Tempel id ke variabel berikut */&quot;
+              &quot;/* Tempel id kebun ke variabel berikut */&quot;
             </Code>
             <Code colorScheme="green" width={"100%"}>
-              let id = {params.id}
+              int id_kebun = {params.id}
             </Code>
-            <ListItem>Klik tombol di bawah untuk menghubungkan sistem</ListItem>
+            <ListItem>Unggah file program ke modul IoT (papan mikrokontroler)</ListItem>
+            <ListItem>Tunggu sampai unggahan berhasil dan mulai mengirimkan data kebun</ListItem>
+            <ListItem>Jika data tidak berhasil dikirim, pastikan username, kata sandi, dan id kebun yang dimasukkan sudah benar</ListItem>
+            <ListItem>Jika data berhasil dikirim dan tampilan monitor kebun masih sama, tekan tombol di bawah atau refresh halaman</ListItem>
           </OrderedList>
           <Button
             colorScheme="green"
